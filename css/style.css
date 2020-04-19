@@ -1,0 +1,521 @@
+@charset "UTF-8";
+/* カラー */
+/* ブレークポイント */
+@import url("https://fonts.googleapis.com/css2?family=Playball&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap");
+/* メディアクエリの定義 */
+/* 全ての要素に適用 */
+*, *:before, *:after {
+  color: #3e3e3e;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+/* 初期化 */
+body {
+  font-family: 'Open Sans',"游ゴシック", "Yu Gothic", "游ゴシック体", YuGothic, sans-serif;
+  padding: 0;
+  margin: 0;
+}
+
+html {
+  font-size: 10px;
+}
+
+img {
+  vertical-align: bottom;
+}
+
+a {
+  text-decoration: none;
+}
+
+ul {
+  list-style: none;
+}
+
+/* 文字の定義 */
+h1 {
+  font-family: 'Playball',"游ゴシック", "Yu Gothic", "游ゴシック体", YuGothic, sans-serif;
+  font-size: 14rem;
+  white-space: nowrap;
+  text-align: center;
+  margin: 0;
+}
+
+@media screen and (max-width: 1023px) {
+  h1 {
+    line-height: 1;
+    white-space: normal;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  h1 {
+    font-size: 8rem;
+  }
+}
+
+h2 {
+  font-size: 5rem;
+}
+
+@media screen and (max-width: 1023px) {
+  h2 {
+    font-size: 4rem;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  h2 {
+    font-size: 2.2rem;
+  }
+}
+
+h3 {
+  font-size: 2.6rem;
+}
+
+@media screen and (max-width: 1023px) {
+  h3 {
+    font-size: 2.2rem;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  h3 {
+    font-size: 2rem;
+  }
+}
+
+p {
+  font-size: 2rem;
+  margin: 0;
+}
+
+@media screen and (max-width: 767px) {
+  p {
+    font-size: 1.6rem;
+  }
+}
+
+a {
+  font-size: 1.8rem;
+}
+
+ul, li {
+  font-size: 1.6rem;
+  list-style: none;
+}
+
+/* 文字の定義 */
+/* インナーの幅 */
+.inner {
+  width: 1024px;
+  max-width: 100%;
+  margin: 0 auto;
+  text-align: center;
+}
+
+/* 見出し */
+.title {
+  display: inline-block;
+  font-size: 5rem;
+  font-weight: 400;
+  margin: 1rem 0;
+  position: relative;
+  padding: 1rem 12rem;
+}
+
+@media screen and (max-width: 1023px) {
+  .title {
+    padding: 2rem 12rem;
+    font-size: 4rem;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .title {
+    padding: 2rem 6rem;
+    font-size: 3rem;
+  }
+}
+
+.title::before, .title::after {
+  position: absolute;
+  content: '';
+  display: inline-block;
+  height: 3px;
+  width: 10rem;
+  background-color: #3e3e3e;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+          transform: translateY(-50%);
+}
+
+@media screen and (max-width: 767px) {
+  .title::before, .title::after {
+    width: 5rem;
+  }
+}
+
+.title::before {
+  left: 0;
+}
+
+.title::after {
+  right: 0;
+}
+
+/* 見出し */
+/* 横並びにする */
+.flex {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+@media screen and (max-width: 767px) {
+  .flex {
+    display: block;
+  }
+}
+
+/* お問い合わせ */
+#contact {
+  padding: 3rem 0 7rem;
+  width: 100%;
+}
+
+@media screen and (max-width: 767px) {
+  #contact {
+    padding: 2rem 0 4rem;
+  }
+}
+
+#contact .inner {
+  padding: 2rem;
+  text-align: center;
+  /* お問い合わせフォーム */
+}
+
+#contact .inner form {
+  background-color: #f3f3f3;
+  margin: 4rem 0 0 0;
+  width: 100%;
+  text-align: left;
+  -webkit-box-shadow: 5px 5px 7px rgba(0, 0, 0, 0.5);
+          box-shadow: 5px 5px 7px rgba(0, 0, 0, 0.5);
+  border-radius: 12px;
+  padding: 4rem 5rem;
+  /* 横並べにする */
+  /* 名前とメアドの入力欄 */
+  /* 名前とメアドの入力欄 */
+  /* お問い合わせの内容 */
+  /* お問い合わせの内容 */
+  /* ラジオボタン */
+  /* ラジオボタン */
+  /* チェックボタン */
+  /* チェックボタン */
+  /* 送信ボタン */
+  /* 送信ボタン */
+}
+
+@media screen and (max-width: 767px) {
+  #contact .inner form {
+    margin-top: 2rem;
+    padding: 2rem 3rem;
+  }
+}
+
+#contact .inner form p {
+  font-size: 2.2rem;
+}
+
+@media screen and (max-width: 767px) {
+  #contact .inner form p {
+    font-size: 1.6rem;
+  }
+}
+
+#contact .inner form .flex {
+  padding-bottom: 4rem;
+}
+
+@media screen and (max-width: 767px) {
+  #contact .inner form .flex {
+    display: block;
+    padding-bottom: 3rem;
+  }
+}
+
+#contact .inner form .flex p {
+  margin-right: auto;
+}
+
+@media screen and (max-width: 767px) {
+  #contact .inner form .flex p {
+    width: 100%;
+    margin: 1rem 0;
+  }
+}
+
+#contact .inner form .input-text {
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  background-color: transparent;
+  background-image: none;
+  border: none;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.16);
+  border-radius: 0;
+  color: inherit;
+  font-family: inherit;
+  font-size: 2.2rem;
+  padding: 0.5rem 0.8rem;
+  width: 65%;
+}
+
+@media screen and (max-width: 767px) {
+  #contact .inner form .input-text {
+    width: 100%;
+    font-size: 1.6rem;
+  }
+}
+
+#contact .inner form .input-text:focus, #contact .inner form .input-text:hover {
+  border-bottom: 1px solid #3b69ff;
+  outline: none;
+  -webkit-box-shadow: 0 10px 4px -4px rgba(59, 105, 255, 0.2);
+          box-shadow: 0 10px 4px -4px rgba(59, 105, 255, 0.2);
+}
+
+#contact .inner form textarea {
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  background-color: transparent;
+  background-image: none;
+  border: 1px solid rgba(0, 0, 0, 0.16);
+  border-radius: 0;
+  color: inherit;
+  font-family: inherit;
+  font-size: 1.6rem;
+  height: 200px;
+  padding: 1rem 0.8rem;
+  width: 100%;
+  margin-top: 1rem;
+}
+
+#contact .inner form textarea:focus, #contact .inner form textarea:hover {
+  border: 1px solid #3b69ff;
+  -webkit-box-shadow: none;
+          box-shadow: none;
+  -webkit-box-shadow: 0 0 3px #3b69ff;
+          box-shadow: 0 0 3px #3b69ff;
+  outline: none;
+}
+
+#contact .inner form .radio-btn {
+  display: none;
+}
+
+#contact .inner form .radio-btn + span {
+  cursor: pointer;
+  display: inline-block;
+  margin-right: 6rem;
+  padding-left: 2.5rem;
+  position: relative;
+  font-size: 2.2rem;
+}
+
+@media screen and (max-width: 767px) {
+  #contact .inner form .radio-btn + span {
+    font-size: 1.6rem;
+    margin-right: 3rem;
+  }
+}
+
+#contact .inner form .radio-btn + span::before {
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.5);
+  border-radius: 50%;
+  content: "";
+  display: block;
+  height: 16px;
+  left: 0;
+  position: absolute;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+          transform: translateY(-50%);
+  width: 16px;
+}
+
+#contact .inner form .radio-btn + span::after {
+  background: #4973ff;
+  border: 1px solid transparent;
+  border-radius: 50%;
+  content: "";
+  height: 8px;
+  left: 4px;
+  opacity: 0;
+  padding: 2px;
+  position: absolute;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+          transform: translateY(-50%);
+  -webkit-transition: all 0.3s ease 0s;
+  transition: all 0.3s ease 0s;
+  width: 8px;
+}
+
+#contact .inner form .radio-btn + span:focus:before, #contact .inner form .radio-btn + span:hover:before {
+  border: 1px solid #3b69ff;
+  -webkit-box-shadow: 0 0 4px #3b69ff;
+          box-shadow: 0 0 4px #3b69ff;
+}
+
+#contact .inner form .radio-btn + span:active:before {
+  background-color: rgba(59, 105, 255, 0.3);
+}
+
+#contact .inner form .radio-btn:checked + span::after {
+  opacity: 1;
+}
+
+#contact .inner form .check-btn {
+  display: none;
+}
+
+#contact .inner form .check-btn + span {
+  cursor: pointer;
+  display: inline-block;
+  margin: 0 0.2em 0;
+  padding: 0 0 0 3rem;
+  position: relative;
+  font-size: 1.8rem;
+}
+
+@media screen and (max-width: 767px) {
+  #contact .inner form .check-btn + span {
+    font-size: 1.6rem;
+  }
+}
+
+#contact .inner form .check-btn + span::before {
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.5);
+  border-radius: 0;
+  content: "";
+  display: block;
+  height: 1.6rem;
+  left: 0;
+  position: absolute;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+          transform: translateY(-50%);
+  width: 1.6rem;
+}
+
+#contact .inner form .check-btn + span::after {
+  border-bottom: 3px solid #4973ff;
+  border-left: 3px solid #4973ff;
+  content: "";
+  display: block;
+  height: 0.6em;
+  left: 0;
+  margin-top: -0.2em;
+  opacity: 0;
+  position: absolute;
+  top: 50%;
+  -webkit-transform: translateY(-50%) rotate(-45deg);
+          transform: translateY(-50%) rotate(-45deg);
+  -webkit-transition: all 0.3s ease 0s;
+  transition: all 0.3s ease 0s;
+  width: 1em;
+}
+
+#contact .inner form .check-btn + span:focus:before, #contact .inner form .check-btn + span:hover:before {
+  border: 1px solid #3b69ff;
+  -webkit-box-shadow: 0 0 4px #3b69ff;
+          box-shadow: 0 0 4px #3b69ff;
+}
+
+#contact .inner form .check-btn + span:active:before {
+  background-color: rgba(59, 105, 255, 0.3);
+}
+
+#contact .inner form .check-btn + span a {
+  text-decoration: underline;
+  padding-left: .8rem;
+}
+
+@media screen and (max-width: 767px) {
+  #contact .inner form .check-btn + span a {
+    font-size: 1.6rem;
+  }
+}
+
+#contact .inner form .check-btn:checked + span::after {
+  opacity: 1;
+}
+
+#contact .inner form .submit-btn {
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  background-color: #ffaa3b;
+  background-image: none;
+  border: none;
+  border-radius: 12px;
+  color: #fff;
+  cursor: pointer;
+  display: block;
+  font-size: 1.8rem;
+  margin: 2.5rem auto 0;
+  padding: 1rem 5rem;
+  font-weight: 400;
+  text-decoration: none;
+  position: relative;
+  -webkit-transition: all 0.3s ease 0s;
+  transition: all 0.3s ease 0s;
+}
+
+@media screen and (max-width: 767px) {
+  #contact .inner form .submit-btn {
+    padding: 0.6rem 3rem;
+    font-size: 1.8rem;
+    margin: 2rem auto;
+  }
+}
+
+#contact .inner form .submit-btn:hover, #contact .inner form .submit-btn:focus {
+  outline: none;
+}
+
+#contact .inner form .submit-btn::-moz-foucus-inner {
+  border: none;
+  padding: 0;
+}
+
+#contact .inner form .submit-btn:hover {
+  background-color: #d47800;
+}
+
+#contact .inner form .radio-wrapper {
+  padding-bottom: 4.4rem;
+}
+
+@media screen and (max-width: 767px) {
+  #contact .inner form .radio-wrapper {
+    padding-bottom: 2rem;
+    font-size: 1.4rem;
+  }
+}
+
+#contact .inner form .radio-wrapper p {
+  margin-right: 23rem;
+}
+
+/* お問い合わせ */
+/*# sourceMappingURL=style.css.map */

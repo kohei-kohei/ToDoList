@@ -1,0 +1,17 @@
+/* カラー */
+$word-color : #3e3e3e;
+$gray : #f3f3f3;
+$light-blue : rgb(152, 236, 255);
+$blue : #4973ff;
+$green : #a8ffaa;
+$yellow : #ffaa3b;
+
+/* ブレークポイント */
+$layout-width-inner: 1024px;
+$breakpoints: (
+  "sm-sp": "screen and (max-width: 359px)",     /* Galaxyのサイズが360px */
+  "sp": "screen and (max-width: 767px)",     /* iPadのサイズが768px */
+  "tab": "screen and (max-width: #{$layout-width-inner - 1px})",
+  "pc": "screen and (min-width: #{$layout-width-inner})"
+  
+);

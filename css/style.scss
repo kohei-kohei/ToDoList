@@ -1,0 +1,433 @@
+@import "variable";
+@import url('https://fonts.googleapis.com/css2?family=Playball&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap');
+
+/* メディアクエリの定義 */
+@mixin mq($breakpoint: sp) {
+    @media #{map-get($breakpoints, $breakpoint)} {
+        @content;
+    }
+}
+
+/* 全ての要素に適用 */
+*, *:before, *:after {
+    color: $word-color;
+    box-sizing: border-box;
+}
+
+/* 初期化 */
+body {
+    font-family: 'Open Sans',"游ゴシック", "Yu Gothic", "游ゴシック体", YuGothic, sans-serif;
+    padding: 0;
+    margin: 0;
+}
+html {
+    font-size: 10px;
+}
+img {
+    vertical-align: bottom;
+}
+a {
+    text-decoration: none;
+}
+ul {
+    list-style: none;
+}
+
+/* 文字の定義 */
+h1 {
+    font-family: 'Playball',"游ゴシック", "Yu Gothic", "游ゴシック体", YuGothic, sans-serif;
+    font-size: 14rem;
+    white-space: nowrap;
+    text-align: center;
+    margin: 0;
+    @include mq('tab') {
+        line-height: 1;
+        white-space: normal;
+    }
+    @include mq('sp') {
+        font-size: 8rem;
+    }
+}
+h2 {
+    font-size: 5rem;
+    @include mq('tab') {
+        font-size: 4rem;
+    }
+    @include mq('sp') {
+        font-size: 2.2rem;
+    }
+}
+h3 {
+    font-size: 2.6rem;
+    @include mq('tab') {
+        font-size:2.2rem;
+    }
+    @include mq('sp') {
+        font-size: 2rem;
+    }
+}
+p {
+    font-size: 2rem;
+    margin: 0;
+    @include mq("sp") {
+        font-size: 1.6rem;
+    }
+}
+a {
+    font-size: 1.8rem;
+}
+ul, li {
+    font-size: 1.6rem;
+    list-style: none;
+} /* 文字の定義 */
+
+/* インナーの幅 */
+.inner {
+    width: $layout-width-inner;
+    max-width: 100%;
+    margin: 0 auto;
+    text-align: center;
+}
+
+/* 見出し */
+.title {
+    display: inline-block;
+    font-size: 5rem;
+    font-weight: 400;
+    margin: 1rem 0;
+    position: relative;
+    padding: 1rem 12rem;
+
+    @include mq('tab'){
+        padding: 2rem 12rem;
+        font-size: 4rem;
+    }
+    @include mq('sp'){
+        padding: 2rem 6rem;
+        font-size: 3rem;
+    }
+    
+    &::before,&::after {
+        position: absolute;
+        content: '';
+        display: inline-block;
+        height: 3px;
+        width: 10rem;
+        background-color: $word-color;
+        top: 50%;
+        transform: translateY(-50%);
+        @include mq('sp'){
+            width: 5rem;
+        }
+    }
+    &::before {
+        left: 0;
+    }
+    &::after {
+        right: 0;
+    }
+
+} /* 見出し */
+
+/* 横並びにする */
+.flex {
+    display: flex;
+    @include mq('sp'){
+        display: block;
+    }
+}
+
+/* お問い合わせ */
+#contact {
+    padding: 3rem 0 7rem;
+    width: 100%;
+    @include mq('sp'){
+        padding: 2rem 0 4rem;
+    }
+    .inner {
+        padding: 2rem;
+        text-align: center;
+
+        /* お問い合わせフォーム */
+        form {
+            background-color: $gray;
+            margin: 4rem 0 0 0;
+            width: 100%;
+            text-align: left;
+            box-shadow: 5px 5px 7px rgba(0, 0, 0, 0.5);
+            border-radius: 12px;
+            padding: 4rem 5rem;
+            @include mq('sp'){
+                margin-top: 2rem;
+                padding: 2rem 3rem;
+            }
+
+            p {
+                font-size: 2.2rem;
+                @include mq('sp') {
+                    font-size: 1.6rem;
+                }                   
+            }
+
+            /* 横並べにする */
+            .flex {
+                padding-bottom: 4rem;
+
+                @include mq('sp') {
+                    display: block;
+                    padding-bottom: 3rem;
+                }
+
+                p {
+                    margin-right: auto;
+                    @include mq('sp') {
+                        width: 100%;
+                        margin: 1rem 0;
+                    }
+
+                }
+            }
+
+
+            /* 名前とメアドの入力欄 */
+            .input-text {
+                appearance: none;
+                background-color: transparent;
+                background-image: none;
+                border: none;
+                border-bottom: 1px solid rgba(0, 0, 0, 0.16);
+                border-radius: 0;
+                color: inherit;
+                font-family: inherit;
+                font-size: 2.2rem;
+                padding: 0.5rem 0.8rem;
+                width: 65%;
+                @include mq('sp') {
+                    width: 100%;
+                    font-size: 1.6rem;
+                }
+                
+                &:focus, &:hover {
+                    border-bottom: 1px solid rgba(59, 105, 255, 1);
+                    outline: none;
+                    box-shadow: 0 10px 4px -4px rgba(59, 105, 255, 0.2);
+                }
+            } /* 名前とメアドの入力欄 */
+
+            /* お問い合わせの内容 */
+            textarea {
+                appearance: none;
+                background-color: transparent;
+                background-image: none;
+                border: 1px solid rgba(0, 0, 0, 0.16);
+                border-radius: 0;
+                color: inherit;
+                font-family: inherit;
+                font-size: 1.6rem;
+                height: 200px;
+                padding: 1rem 0.8rem;
+                width: 100%;
+                margin-top: 1rem;
+
+                &:focus, &:hover {
+                    border: 1px solid rgba(59, 105, 255, 1);
+                    box-shadow: none;
+                    box-shadow: 0 0 3px rgba(59, 105, 255, 1);
+                    outline: none;
+                }
+                
+            } /* お問い合わせの内容 */
+
+            /* ラジオボタン */
+            .radio-btn {
+                display: none;
+                
+                + span {
+                    cursor: pointer;
+                    display: inline-block;
+                    margin-right: 6rem;
+                    padding-left: 2.5rem;
+                    position: relative;
+                    font-size: 2.2rem;
+                    @include mq('sp') {
+                        font-size: 1.6rem;
+                        margin-right: 3rem;
+                    }
+                    
+                    &::before {
+                        background: #fff;
+                        border: 1px solid rgba(0, 0, 0, 0.5);
+                        border-radius: 50%;
+                        content: "";
+                        display: block;
+                        height: 16px;
+                        left: 0;
+                        position: absolute;
+                        top: 50%;
+                        transform: translateY(-50%);
+                        width: 16px;
+                        
+                    }
+                    
+                    &::after {
+                        background: $blue;
+                        border: 1px solid transparent;
+                        border-radius: 50%;
+                        content: "";
+                        height: 8px;
+                        left: 4px;
+                        opacity: 0;
+                        padding: 2px;
+                        position: absolute;
+                        top: 50%;
+                        transform: translateY(-50%);
+                        transition: all 0.3s ease 0s;
+                        width: 8px;
+                        
+                    }
+
+                    &:focus, &:hover {
+                        &:before {
+                            border: 1px solid rgba(59, 105, 255, 1);
+                            box-shadow: 0 0 4px rgba(59, 105, 255, 1);
+                        }
+                    }
+                    &:active {
+                        &:before {
+                            background-color: rgba(59, 105, 255, 0.3);
+                        }
+                    }
+
+                }
+            }
+            .radio-btn:checked + span::after {
+                opacity: 1;
+            } /* ラジオボタン */
+
+            /* チェックボタン */
+            .check-btn {
+                display: none;
+                
+                + span {
+                    cursor: pointer;
+                    display: inline-block;
+                    margin: 0 0.2em 0;
+                    padding: 0 0 0 3rem;
+                    position: relative;
+                    font-size: 1.8rem;
+                    @include mq('sp') {
+                        font-size: 1.6rem;
+                    }
+
+                    &::before {
+                        background: #fff;
+                        border: 1px solid rgba(0, 0, 0, 0.5);
+                        border-radius: 0;
+                        content: "";
+                        display: block;
+                        height: 1.6rem;
+                        left: 0;
+                        position: absolute;
+                        top: 50%;
+                        transform: translateY(-50%);
+                        width: 1.6rem;
+                    }
+                    
+                    &::after {
+                        border-bottom: 3px solid $blue;
+                        border-left: 3px solid $blue;
+                        content: "";
+                        display: block;
+                        height: 0.6em;
+                        left: 0;
+                        margin-top: -0.2em;
+                        opacity: 0;
+                        position: absolute;
+                        top: 50%;
+                        transform: translateY(-50%) rotate(-45deg);
+                        transition: all 0.3s ease 0s;
+                        width: 1em;
+                    }
+
+                    &:focus, &:hover {
+                        &:before {
+                            border: 1px solid rgba(59, 105, 255, 1);
+                            box-shadow: 0 0 4px rgba(59, 105, 255, 1);
+                        }
+                    }
+                    &:active {
+                        &:before {
+                            background-color: rgba(59, 105, 255, 0.3);
+                        }
+                    }
+
+                    a {
+                        text-decoration: underline;
+                        padding-left: .8rem;
+                        @include mq('sp') {
+                            font-size: 1.6rem;
+                        }
+                    }
+                }
+            }
+            .check-btn:checked + span::after {
+                opacity: 1;
+            } /* チェックボタン */
+
+            /* 送信ボタン */
+            .submit-btn {
+                appearance: none;
+                background-color: $yellow;
+                background-image: none;
+                border: none;
+                border-radius: 12px;
+                color: #fff;
+                cursor: pointer;
+                display: block;
+                font-size: 1.8rem;
+                margin: 2.5rem auto 0;
+                padding: 1rem 5rem;
+                font-weight: 400;
+                text-decoration: none;
+                position: relative;
+                transition: all 0.3s ease 0s;
+
+                @include mq("sp") {
+                    padding: 0.6rem 3rem;
+                    font-size: 1.8rem;
+                    margin: 2rem auto;
+                }
+                
+                &:hover,
+                &:focus {
+                    outline: none;
+                }
+                
+                &::-moz-foucus-inner {
+                    border: none;
+                    padding: 0;
+                }
+
+                &:hover {
+                    background-color: darken($yellow,20%);
+                }
+
+            } /* 送信ボタン */
+
+            .radio-wrapper {
+                padding-bottom: 4.4rem;
+                @include mq('sp') {
+                    padding-bottom: 2rem;
+                    font-size: 1.4rem;
+                }
+
+                p {
+                    margin-right: 23rem;
+                }
+            }
+        }
+    
+    }
+}
+/* お問い合わせ */
