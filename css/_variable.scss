@@ -1,10 +1,8 @@
 /* カラー */
-$word-color : #3e3e3e;
-$gray : #f3f3f3;
-$light-blue : rgb(152, 236, 255);
-$blue : #4973ff;
-$green : #a8ffaa;
-$yellow : #ffaa3b;
+$word-color :#3e3e3e;
+$green :     #6db164;
+$pink :      #fdbda8;
+$dark-pink :   darken($pink, 5%);
 
 /* ブレークポイント */
 $layout-width-inner: 1024px;
