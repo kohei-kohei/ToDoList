@@ -58,6 +58,7 @@ if(isset($_POST['method']) && ($_POST['method'] === 'put')) {
     </head>
 
     <body>
+        <a href="./login.php">ログイン</a>
                   
         <!-- Todoリスト -->
         <section id="todo">
@@ -103,6 +104,7 @@ if(isset($_POST['method']) && ($_POST['method'] === 'put')) {
                 
             </div>
         </section> <!-- /Todoリスト -->
+
         
     </body>
 </html>
