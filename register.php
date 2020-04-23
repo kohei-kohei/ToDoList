@@ -6,7 +6,7 @@ session_start();
 $errors = array();
 
 // 利用者の登録
-if(isset($_POST['submit']) && $_POST['submit'] === "ログイン") {
+if(isset($_POST['submit']) && $_POST['submit'] === "登録") {
     $user = htmlspecialchars($_POST['user'], ENT_QUOTES);
     $password = htmlspecialchars($_POST['password'], ENT_QUOTES);
 
@@ -15,35 +15,21 @@ if(isset($_POST['submit']) && $_POST['submit'] === "ログイン") {
         if ($password !== "" && mb_strlen($password) >= 4) {
 
             $dbh = db_connect();
-                
-            $sql = 'SELECT * FROM users WHERE user = ?'; // SQLの命令文
+            
+            $sql = 'INSERT INTO users (user, password) VALUES (?, ?)';   // SQLの命令文
             
             try {
-                //echo "<pre>";
-                //echo "ログイン認証中";
-                //echo "</pre>";
 
                 // PDOStatementインスタンス
                 $stmt = $dbh->prepare($sql);
                 $stmt->bindValue(1, $user, PDO::PARAM_STR);
+                $stmt->bindValue(2, password_hash($password, PASSWORD_DEFAULT), PDO::PARAM_STR);
                 $stmt->execute();
                 
-                $result = $stmt->fetch(PDO::FETCH_ASSOC);
-
-                if (password_verify($password, $result['password'])) {
-                    echo "<pre>";
-                    echo "ログイン認証に成功しました";
-                    echo "</pre>";
-                } else {
-                    echo "<pre>";
-                    echo "ログイン認証に失敗しました";
-                    echo "</pre>";
-                } 
-
                 $dbh = null;
                 
-                //header('Location: ./login.php');
-                //exit();
+                header('Location: ./login.php');
+                exit();
 
             } catch(Exception $e) {
                 print "データベースの接続に失敗しました： " . $e->getMessage() . "<br/>";
@@ -62,7 +48,6 @@ if(isset($_POST['submit']) && $_POST['submit'] === "ログイン") {
         }
     }
     unset($user);
-    unset($password);
 }
 ?>
 
@@ -71,7 +56,7 @@ if(isset($_POST['submit']) && $_POST['submit'] === "ログイン") {
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>ログイン画面</title>
+        <title>登録画面</title>
 
         <!-- Twitterの設定 -->
         <meta name="twitter:card" content="summary" /> 
@@ -90,19 +75,19 @@ if(isset($_POST['submit']) && $_POST['submit'] === "ログイン") {
         <header>
             <div class="inner">
                 <p>Todoリスト</p>
-                <a href="./register.php" class="register-btn">登録</a>
+                <a href="./login.php">ログイン</a>
             </div>
         </header>
 
-        <!-- ログイン画面 -->
-        <section id="login">
+        <!-- 登録画面 -->
+        <section id="register">
             <div class="inner">
-                <h2 class="title">ログイン画面</h2>
+                <h2 class="title">登録画面</h2>
 
-                <form action="login.php" method="post" class="input_info">
+                <form action="register.php" method="post" class="input_info">
 
                     <?php if (isset($errors['user'])) { echo "<p class='alert'>※".$errors['user']."</p>"; } ?>
-
+                    
                     <div class="user flex">
                         <p>名前</p>
                         <input class="input-text" type="text" name="user" placeholder="名前を入力してください">
@@ -112,14 +97,12 @@ if(isset($_POST['submit']) && $_POST['submit'] === "ログイン") {
 
                     <div class="password flex">
                         <p>パスワード</p>
-                        <input class="input-text" type="text" name="password" placeholder="パスワードを入力してください">
+                        <input class="input-text" type="text" name="password" placeholder="4文字以上にしてください">
                     </div>
-
-                    <input class="submit-btn" type="submit" name="submit" value="ログイン">
+                    
+                    <input class="submit-btn" type="submit" name="submit" value="登録">
 
                 </form>
-
-                <a href="./register.php">まだ登録されていない方はこちら</a>
                 
             </div>
         </section> <!-- /ログイン画面 -->

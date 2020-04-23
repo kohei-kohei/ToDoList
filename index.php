@@ -2,26 +2,38 @@
 
 require_once('functions.php');
 
+$errors = array();
+
 // タスクの登録
-if(isset($_POST['submit'])) {
-    $name = htmlspecialchars($_POST['name'], ENT_QUOTES);
+if(isset($_POST['submit']) && $_POST['submit'] === "追加") {
+    $task = htmlspecialchars($_POST['task'], ENT_QUOTES);
 
-    $dbh = db_connect();
+    // 空チェックと文字数チェック
+    if ($task !== "" && mb_strlen($task) >= 2) {
 
-    $sql = 'INSERT INTO tasks (name, done) VALUES (?, 0)';   // SQLの命令文
+        $dbh = db_connect();
+        
+        $sql = 'INSERT INTO tasks (task, done) VALUES (?, 0)';   // SQLの命令文
+        
+        // PDOStatementインスタンス
+        $stmt = $dbh->prepare($sql);
+        $stmt->bindValue(1, $task, PDO::PARAM_STR);
+        $stmt->execute();
+        
+        $dbh = null;
 
-    // PDOStatementインスタンス
-    $stmt = $dbh->prepare($sql);
-    $stmt->bindValue(1, $name, PDO::PARAM_STR);
-    $stmt->execute();
-
-    $dbh = null;
-
-    unset($name);    
+        header('Location: ./');
+        exit();
+        
+    } else {
+        $errors['task'] = "タスクを２文字以上で入力してください";
+    }
+    unset($task);
 }
 
 // 完了ボタンを押したら非表示にする
 if(isset($_POST['method']) && ($_POST['method'] === 'put')) {
+
     $id = htmlspecialchars($_POST['id'], ENT_QUOTES);
     $id = (int)$id;
 
@@ -34,6 +46,9 @@ if(isset($_POST['method']) && ($_POST['method'] === 'put')) {
     $stmt->execute();
 
     $dbh = null;
+
+    header('Location: ./');
+    exit();
 }
 ?>
 
@@ -48,17 +63,22 @@ if(isset($_POST['method']) && ($_POST['method'] === 'put')) {
         <meta name="twitter:card" content="summary" /> 
         <meta name="twitter:site" content="@Kohei_web_nlp" />
         <meta property="og:url" content="https://kohei-kohei.github.io/portfolio/" /> 
-        <meta property="og:title" content="Kohei's Portfolio" /> 
-        <meta property="og:description" content="こーへいのポートフォリオサイトです" />
+        <meta property="og:title" content="Todoリスト" /> 
+        <meta property="og:description" content="Todoリストです" />
         <meta property="og:image" content="https://kohei-kohei.github.io/portfolio/img/dubai.jpg" />
-
-        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css">
 
         <link href="css/style.css" rel="stylesheet">
     </head>
 
     <body>
-        <a href="./login.php">ログイン</a>
+
+        <!-- ヘッダー -->
+        <header>
+            <div class="inner">
+                <p>Todoリスト</p>
+                <a href="./login.php">ログイン</a>
+            </div>
+        </header>
                   
         <!-- Todoリスト -->
         <section id="todo">
@@ -69,21 +89,21 @@ if(isset($_POST['method']) && ($_POST['method'] === 'put')) {
                 <?php 
                 $dbh = db_connect();
                 
-                $sql = 'SELECT id, name FROM tasks WHERE done = 0 ORDER BY id ASC';
+                $sql = 'SELECT id, task FROM tasks WHERE done = 0 ORDER BY id ASC';
                 
                 $stmt = $dbh->prepare($sql);
                 $stmt->execute();
                 
                 $dbh = null;
                 
-                while($task = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                while($tasks = $stmt->fetch(PDO::FETCH_ASSOC)) {
                     print '<li class="flex">';
-                    print '<p>' . $task["name"] . '</p>';
+                    print '<p>' . $tasks["task"] . '</p>';
 
                     print '
                         <form action="index.php" method="post">
                             <input type="hidden" name="method" value="put">
-                            <input type="hidden" name="id" value=" ' . $task['id'] .' ">
+                            <input type="hidden" name="id" value=" ' . $tasks['id'] .' ">
                             <button type="submit">完了</button>
                         </form>
                     ';
@@ -92,14 +112,17 @@ if(isset($_POST['method']) && ($_POST['method'] === 'put')) {
                 ?>
                 </ul>
 
-                <form action="index.php" method="post" class="input_task">
+                <form action="index.php" method="post" class="input_info">
 
-                    <div class="name flex">
+                    <!-- エラーメッセージ -->
+                    <?php if (isset($errors['task'])) { echo "<p class='alert'>※".$error_message."</p>"; } ?>
+
+                    <div class="task flex">
                         <p>タスク</p>
-                        <input class="input-text" type="text" name="name" placeholder="タスクを入力してください">
+                        <input class="input-text" type="text" name="task" placeholder="タスクを入力してください">
                     </div>
 
-                    <input class="submit-btn" type="submit" name="submit" value="登録">
+                    <input class="submit-btn" type="submit" name="submit" value="追加">
                 </form>
                 
             </div>

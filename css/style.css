@@ -109,11 +109,24 @@ ul {
 }
 
 /* 文字の定義 */
-/* インナーの幅 */
-.inner {
+/* セクションの幅や高さ */
+section {
+  padding: 4rem 0 7rem;
+  width: 100%;
+  /* インナーの幅 */
+}
+
+@media screen and (max-width: 767px) {
+  section {
+    padding: 4rem 0 4rem;
+  }
+}
+
+section .inner {
   width: 1024px;
   max-width: 100%;
   margin: 0 auto;
+  padding: 0 2rem;
   text-align: center;
 }
 
@@ -124,7 +137,7 @@ ul {
   display: inline-block;
   font-size: 6rem;
   font-weight: 400;
-  margin: 3rem 0 4rem;
+  margin: 4rem 0 5rem;
   padding: 1rem 3rem;
   position: relative;
   /* ドロップシャドウを少し斜めに配置して、立体感を出す */
@@ -168,21 +181,186 @@ ul {
   }
 }
 
-/* ToDoリスト */
-#todo {
-  padding: 3rem 0 7rem;
-  width: 100%;
+.alert {
+  color: red;
+}
+
+/* 共通パーツ */
+/* 文字入力があるボックス */
+.input_info {
+  /* グラデーションで折り目がついた感じに */
+  background: linear-gradient(to right, #fdbda8 0%, #fcaa8f 0.5%, #fcaa8f 13%, #fdbda8 16%);
+  display: block;
+  margin: 0 auto 2rem;
+  padding: 4rem 5rem 3rem;
+  position: relative;
+  width: 90%;
+  /* ドロップシャドウを少し斜めに配置して、立体感を出す */
+  /* 横並べにする */
+  /* タスクの入力欄 */
+  /* タスクの入力欄 */
+  /* 送信ボタン */
+  /* 送信ボタン */
+}
+
+.input_info::after {
+  content: "";
+  display: block;
+  position: absolute;
+  z-index: -1;
+  bottom: 5px;
+  right: 0;
+  height: 15px;
+  width: 99%;
+  background: rgba(0, 0, 0, 0.5);
+  box-shadow: 0 5px 5px rgba(0, 0, 0, 0.3);
+  transform: rotate(2deg);
 }
 
 @media screen and (max-width: 767px) {
-  #todo {
-    padding: 3rem 0 4rem;
+  .input_info {
+    margin-top: 2rem;
+    padding: 2rem 3rem;
   }
 }
 
+.input_info .flex {
+  padding-bottom: 4rem;
+}
+
+@media screen and (max-width: 767px) {
+  .input_info .flex {
+    display: block;
+    padding-bottom: 3rem;
+  }
+}
+
+.input_info .flex p {
+  margin-right: auto;
+}
+
+@media screen and (max-width: 767px) {
+  .input_info .flex p {
+    width: 100%;
+    margin: 1rem 0;
+  }
+}
+
+.input_info .input-text {
+  appearance: none;
+  background-color: transparent;
+  background-image: none;
+  border: none;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+  border-radius: 0;
+  color: inherit;
+  font-family: inherit;
+  font-size: 2.2rem;
+  padding: 0.5rem 0.8rem;
+  width: 80%;
+}
+
+@media screen and (max-width: 767px) {
+  .input_info .input-text {
+    width: 100%;
+    font-size: 1.6rem;
+  }
+}
+
+.input_info .input-text:focus, .input_info .input-text:hover {
+  border-bottom: 1px solid #3b69ff;
+  outline: none;
+  box-shadow: 0 10px 4px -4px rgba(59, 105, 255, 0.2);
+}
+
+.input_info .submit-btn {
+  appearance: none;
+  background-color: #585858;
+  border: 1px solid #3e3e3e;
+  background-image: none;
+  border-radius: 12px;
+  color: white;
+  cursor: pointer;
+  display: block;
+  font-size: 1.8rem;
+  margin: 0 auto;
+  padding: 1rem 5rem;
+  font-weight: 400;
+  text-decoration: none;
+  transition: all 0.3s ease 0s;
+}
+
+@media screen and (max-width: 767px) {
+  .input_info .submit-btn {
+    padding: 0.6rem 3rem;
+    font-size: 1.8rem;
+    margin: 2rem auto;
+  }
+}
+
+.input_info .submit-btn:hover, .input_info .submit-btn:focus {
+  outline: none;
+}
+
+.input_info .submit-btn::-moz-foucus-inner {
+  border: none;
+  padding: 0;
+}
+
+.input_info .submit-btn:hover {
+  background-color: white;
+  color: #3e3e3e;
+}
+
+/* 文字入力があるボックス */
+/* ヘッダー */
+header {
+  background-color: #3e3e3e;
+  height: 8rem;
+}
+
+header .inner {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 8rem;
+  height: 8rem;
+}
+
+header .inner p {
+  color: white;
+  font-size: 4rem;
+}
+
+header .inner a {
+  background-color: #a7bbff;
+  border: 1px solid #7494ff;
+  border-radius: 12px;
+  color: #3e3e3e;
+  cursor: pointer;
+  display: inline-block;
+  font-size: 1.8rem;
+  font-weight: 400;
+  padding: 1rem 3rem;
+  transition: all 0.3s ease 0s;
+}
+
+header .inner a:hover {
+  background-color: #dae2ff;
+}
+
+header .inner .register-btn {
+  background-color: #a2fb9f;
+  border: 1px solid #73f96e;
+  padding: 1rem 5rem;
+}
+
+header .inner .register-btn:hover {
+  background-color: #d1fdd0;
+}
+
+/* ToDoリスト */
 #todo .inner {
-  padding: 2rem;
-  text-align: center;
   /* タスクの表示 */
   /* タスクの表示 */
   /* タスク入力 */
@@ -190,7 +368,7 @@ ul {
 }
 
 #todo .inner ul {
-  margin-bottom: 8rem;
+  margin: 0 auto 8rem;
 }
 
 #todo .inner ul li {
@@ -227,13 +405,15 @@ ul {
 
 #todo .inner ul li form {
   margin-left: auto;
+  /* 完了ボタン */
+  /* 完了ボタン */
 }
 
 #todo .inner ul li form button {
   appearance: none;
   background: none;
-  background-color: #6db164;
-  border: 1px solid #54964c;
+  background-color: #c7c7c7;
+  border: 1px solid #aeaeae;
   color: #3e3e3e;
   font-size: 1.8rem;
   margin-left: auto;
@@ -248,277 +428,101 @@ ul {
 }
 
 #todo .inner ul li form button:hover {
-  background-color: #54964c;
+  background-color: #e1e1e1;
 }
 
-#todo .inner .input_task {
-  /* グラデーションで折り目がついた感じに */
-  background: linear-gradient(to right, #fdbda8 0%, #fcaa8f 0.5%, #fcaa8f 13%, #fdbda8 16%);
-  display: block;
-  margin: 0 auto 2rem;
-  padding: 4rem 5rem 3rem;
-  position: relative;
-  width: 90%;
-  /* ドロップシャドウを少し斜めに配置して、立体感を出す */
-  /* 横並べにする */
-  /* タスクの入力欄 */
-  /* タスクの入力欄 */
+#todo .inner .input_info {
   /* 送信ボタン */
   /* 送信ボタン */
 }
 
-#todo .inner .input_task::after {
-  content: "";
-  display: block;
-  position: absolute;
-  z-index: -1;
-  bottom: 5px;
-  right: 0;
-  height: 15px;
-  width: 99%;
-  background: rgba(0, 0, 0, 0.5);
-  box-shadow: 0 5px 5px rgba(0, 0, 0, 0.3);
-  transform: rotate(2deg);
-}
-
-@media screen and (max-width: 767px) {
-  #todo .inner .input_task {
-    margin-top: 2rem;
-    padding: 2rem 3rem;
-  }
-}
-
-#todo .inner .input_task .flex {
-  padding-bottom: 4rem;
-}
-
-@media screen and (max-width: 767px) {
-  #todo .inner .input_task .flex {
-    display: block;
-    padding-bottom: 3rem;
-  }
-}
-
-#todo .inner .input_task .flex p {
-  margin-right: auto;
-}
-
-@media screen and (max-width: 767px) {
-  #todo .inner .input_task .flex p {
-    width: 100%;
-    margin: 1rem 0;
-  }
-}
-
-#todo .inner .input_task .input-text {
-  appearance: none;
-  background-color: transparent;
-  background-image: none;
-  border: none;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.3);
-  border-radius: 0;
-  color: inherit;
-  font-family: inherit;
-  font-size: 2.2rem;
-  padding: 0.5rem 0.8rem;
-  width: 80%;
-}
-
-@media screen and (max-width: 767px) {
-  #todo .inner .input_task .input-text {
-    width: 100%;
-    font-size: 1.6rem;
-  }
-}
-
-#todo .inner .input_task .input-text:focus, #todo .inner .input_task .input-text:hover {
-  border-bottom: 1px solid #3b69ff;
-  outline: none;
-  box-shadow: 0 10px 4px -4px rgba(59, 105, 255, 0.2);
-}
-
-#todo .inner .input_task .submit-btn {
-  appearance: none;
-  background-color: #6db164;
-  background-image: none;
-  border: 1px solid #54964c;
-  border-radius: 12px;
-  color: #3e3e3e;
-  cursor: pointer;
-  display: block;
-  font-size: 1.8rem;
-  margin: 0 auto;
+#todo .inner .input_info .submit-btn {
   padding: 1rem 5rem;
-  font-weight: 400;
-  text-decoration: none;
-  position: relative;
-  transition: all 0.3s ease 0s;
 }
 
 @media screen and (max-width: 767px) {
-  #todo .inner .input_task .submit-btn {
+  #todo .inner .input_info .submit-btn {
     padding: 0.6rem 3rem;
-    font-size: 1.8rem;
-    margin: 2rem auto;
   }
-}
-
-#todo .inner .input_task .submit-btn:hover, #todo .inner .input_task .submit-btn:focus {
-  outline: none;
-}
-
-#todo .inner .input_task .submit-btn::-moz-foucus-inner {
-  border: none;
-  padding: 0;
-}
-
-#todo .inner .input_task .submit-btn:hover {
-  background-color: #54964c;
 }
 
 /* ToDoリスト */
 /* ログイン画面 */
-#login {
-  padding: 3rem 0 7rem;
-  width: 100%;
-}
-
-@media screen and (max-width: 767px) {
-  #login {
-    padding: 3rem 0 4rem;
-  }
-}
-
 #login .inner {
-  padding: 2rem;
-  text-align: center;
+  /* 見出し */
   /* タスク入力 */
   /* タスク入力 */
+}
+
+#login .inner .title {
+  /* グラデーションで折り目がついた感じに */
+  background: linear-gradient(to right, #a7bbff 0%, #8ea7ff 0.5%, #8ea7ff 13%, #a7bbff 16%);
 }
 
 #login .inner .input_info {
   /* グラデーションで折り目がついた感じに */
-  background: linear-gradient(to right, #fdbda8 0%, #fcaa8f 0.5%, #fcaa8f 13%, #fdbda8 16%);
-  display: block;
-  margin: 0 auto 2rem;
-  padding: 4rem 5rem 3rem;
-  position: relative;
-  width: 90%;
-  /* ドロップシャドウを少し斜めに配置して、立体感を出す */
-  /* 横並べにする */
+  background: linear-gradient(to right, #a7bbff 0%, #8ea7ff 0.5%, #8ea7ff 13%, #a7bbff 16%);
   /* タスクの入力欄 */
   /* タスクの入力欄 */
   /* 送信ボタン */
   /* 送信ボタン */
-}
-
-#login .inner .input_info::after {
-  content: "";
-  display: block;
-  position: absolute;
-  z-index: -1;
-  bottom: 5px;
-  right: 0;
-  height: 15px;
-  width: 99%;
-  background: rgba(0, 0, 0, 0.5);
-  box-shadow: 0 5px 5px rgba(0, 0, 0, 0.3);
-  transform: rotate(2deg);
-}
-
-@media screen and (max-width: 767px) {
-  #login .inner .input_info {
-    margin-top: 2rem;
-    padding: 2rem 3rem;
-  }
-}
-
-#login .inner .input_info .flex {
-  padding-bottom: 4rem;
-}
-
-@media screen and (max-width: 767px) {
-  #login .inner .input_info .flex {
-    display: block;
-    padding-bottom: 3rem;
-  }
-}
-
-#login .inner .input_info .flex p {
-  margin-right: auto;
-}
-
-@media screen and (max-width: 767px) {
-  #login .inner .input_info .flex p {
-    width: 100%;
-    margin: 1rem 0;
-  }
 }
 
 #login .inner .input_info .input-text {
-  appearance: none;
-  background-color: transparent;
-  background-image: none;
-  border: none;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.3);
-  border-radius: 0;
-  color: inherit;
-  font-family: inherit;
-  font-size: 2.2rem;
-  padding: 0.5rem 0.8rem;
-  width: 80%;
-}
-
-@media screen and (max-width: 767px) {
-  #login .inner .input_info .input-text {
-    width: 100%;
-    font-size: 1.6rem;
-  }
+  border-bottom: 1px solid rgba(0, 0, 0, 0.5);
 }
 
 #login .inner .input_info .input-text:focus, #login .inner .input_info .input-text:hover {
-  border-bottom: 1px solid #3b69ff;
-  outline: none;
-  box-shadow: 0 10px 4px -4px rgba(59, 105, 255, 0.2);
+  box-shadow: 0 10px 4px -4px rgba(59, 105, 255, 0.4);
 }
 
 #login .inner .input_info .submit-btn {
-  appearance: none;
-  background-color: #6db164;
-  background-image: none;
-  border: 1px solid #54964c;
-  border-radius: 12px;
-  color: #3e3e3e;
-  cursor: pointer;
-  display: block;
-  font-size: 1.8rem;
-  margin: 0 auto;
-  padding: 1rem 5rem;
-  font-weight: 400;
-  text-decoration: none;
-  position: relative;
-  transition: all 0.3s ease 0s;
+  padding: 1rem 3rem;
 }
 
 @media screen and (max-width: 767px) {
   #login .inner .input_info .submit-btn {
     padding: 0.6rem 3rem;
-    font-size: 1.8rem;
-    margin: 2rem auto;
   }
 }
 
-#login .inner .input_info .submit-btn:hover, #login .inner .input_info .submit-btn:focus {
-  outline: none;
-}
-
-#login .inner .input_info .submit-btn::-moz-foucus-inner {
-  border: none;
-  padding: 0;
-}
-
-#login .inner .input_info .submit-btn:hover {
-  background-color: #54964c;
-}
-
 /* ログイン画面 */
+/* 登録画面 */
+#register .inner {
+  /* 見出し */
+  /* タスク入力 */
+  /* タスク入力 */
+}
+
+#register .inner .title {
+  /* グラデーションで折り目がついた感じに */
+  background: linear-gradient(to right, #a2fb9f 0%, #73f96e 0.5%, #73f96e 13%, #a2fb9f 16%);
+}
+
+#register .inner .input_info {
+  background: linear-gradient(to right, #a2fb9f 0%, #73f96e 0.5%, #73f96e 13%, #a2fb9f 16%);
+  /* タスクの入力欄 */
+  /* タスクの入力欄 */
+  /* 送信ボタン */
+  /* 送信ボタン */
+}
+
+#register .inner .input_info .input-text {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.5);
+}
+
+#register .inner .input_info .input-text:focus, #register .inner .input_info .input-text:hover {
+  box-shadow: 0 10px 4px -4px rgba(59, 105, 255, 0.4);
+}
+
+#register .inner .input_info .submit-btn {
+  padding: 1rem 5rem;
+}
+
+@media screen and (max-width: 767px) {
+  #register .inner .input_info .submit-btn {
+    padding: 0.6rem 3rem;
+  }
+}
+
+/* 登録画面 */

@@ -3,7 +3,7 @@ function db_connect() {
 
     // エラー処理
     try {
-        $dsn = 'mysql:dbname=todolist;host=localhost;charset=utf8';
+        $dsn = 'mysql:dbname=todolist; host=localhost; charset=utf8';
         $user = 'root';
         $password = 'root';
 
@@ -15,14 +15,14 @@ function db_connect() {
             array (
                 PDO::ATTR_ERRMODE          => PDO::ERRMODE_EXCEPTION,   // エラー処理
                 PDO::ATTR_EMULATE_PREPARES => false,                    // 静的プレースホルダー
-                )
-            );
-            $dbh->query('SET NAMES utf8');
-                        
-            return $dbh;
+            )
+        );
+        $dbh->query('SET NAMES utf8');
+                    
+        return $dbh;
             
     } catch (PDOException $e) {
-        print "エラー： " . $e->getMessage() . "<br/>";
+        print "データベースの接続に失敗しました： " . $e->getMessage() . "<br/>";
         exit();
     }
         
