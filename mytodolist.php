@@ -5,8 +5,36 @@ require_once('functions.php');
 session_start();
 $errors = array();
 
-unset($_SESSION['username']);
-unset($_SESSION['token']);
+$token = htmlspecialchars($_SESSION['token'], ENT_QUOTES);
+
+// CSRF対策
+if (!isset($_SESSION['username']) || !isset($_SESSION['token'])) {
+    $_SESSION['error'] = "不正なアクセスです";
+    header('Location: ./login.php');
+    exit();
+
+} else {
+    $user = htmlspecialchars($_SESSION['username']);
+    $dbh = db_connect();
+
+    $sql = 'SELECT * FROM users WHERE user = ?'; // SQLの命令文
+    
+    // PDOStatementインスタンス
+    $stmt = $dbh->prepare($sql);
+    $stmt->bindValue(1, $user, PDO::PARAM_STR);
+    $stmt->execute();
+    
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+    if ($user !== $result['user']){
+        $_SESSION['error'] = "不正なアクセスです";
+        header('Location: ./login.php');
+        exit();
+
+    } else {
+        echo $user;
+    }
+}
 
 // タスクの登録
 if(isset($_POST['submit']) && $_POST['submit'] === "追加") {
@@ -26,7 +54,7 @@ if(isset($_POST['submit']) && $_POST['submit'] === "追加") {
         
         $dbh = null;
 
-        header('Location: ./');
+        header('Location: ./mytodolist.php');
         exit();
         
     } else {
@@ -51,7 +79,7 @@ if(isset($_POST['method']) && ($_POST['method'] === 'put')) {
 
     $dbh = null;
 
-    header('Location: ./index.php');
+    header('Location: ./mytodolist.php');
     exit();
 }
 ?>
@@ -61,7 +89,7 @@ if(isset($_POST['method']) && ($_POST['method'] === 'put')) {
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Todoリスト | デモ</title>
+        <title>Todoリスト</title>
 
         <!-- Twitterの設定 -->
         <meta name="twitter:card" content="summary" /> 
@@ -79,8 +107,8 @@ if(isset($_POST['method']) && ($_POST['method'] === 'put')) {
         <!-- ヘッダー -->
         <header>
             <div class="inner">
-                <p>Todoリスト デモ</p>
-                <a href="./login.php">ログイン</a>
+                <p>Todoリスト</p>
+                <a href="./index.php" class="logout-btn">ログアウト</a>
             </div>
         </header>
                   
@@ -105,7 +133,7 @@ if(isset($_POST['method']) && ($_POST['method'] === 'put')) {
                     print '<p>' . $tasks["task"] . '</p>';
 
                     print '
-                        <form action="index.php" method="post">
+                        <form action="mytodolist.php" method="post">
                             <input type="hidden" name="method" value="put">
                             <input type="hidden" name="id" value=" ' . $tasks['id'] .' ">
                             <button type="submit">完了</button>
@@ -116,7 +144,7 @@ if(isset($_POST['method']) && ($_POST['method'] === 'put')) {
                 ?>
                 </ul>
 
-                <form action="index.php" method="post" class="input_info">
+                <form action="mytodolist.php" method="post" class="input_info">
 
                     <!-- エラーメッセージ -->
                     <?php if (isset($errors['task'])) { echo "<p class='alert'>※".$errors['task']."</p>"; } ?>

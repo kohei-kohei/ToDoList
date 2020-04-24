@@ -5,6 +5,10 @@ require_once('functions.php');
 session_start();
 $errors = array();
 
+unset($_SESSION['username']);
+unset($_SESSION['token']);
+
+
 // 利用者の登録
 if(isset($_POST['submit']) && $_POST['submit'] === "登録") {
     $user = htmlspecialchars($_POST['user'], ENT_QUOTES);
@@ -103,6 +107,8 @@ if(isset($_POST['submit']) && $_POST['submit'] === "登録") {
                     <input class="submit-btn" type="submit" name="submit" value="登録">
 
                 </form>
+
+                <a href="./index.php">&larr;デモページに戻る</a>
                 
             </div>
         </section> <!-- /ログイン画面 -->

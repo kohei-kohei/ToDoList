@@ -191,7 +191,7 @@ section .inner {
   /* グラデーションで折り目がついた感じに */
   background: linear-gradient(to right, #fdbda8 0%, #fcaa8f 0.5%, #fcaa8f 13%, #fdbda8 16%);
   display: block;
-  margin: 0 auto 2rem;
+  margin: 0 auto 4rem;
   padding: 4rem 5rem 3rem;
   position: relative;
   width: 90%;
@@ -257,6 +257,7 @@ section .inner {
   font-family: inherit;
   font-size: 2.2rem;
   padding: 0.5rem 0.8rem;
+  transition: all 0.3s ease 0s;
   width: 80%;
 }
 
@@ -357,6 +358,16 @@ header .inner .register-btn {
 
 header .inner .register-btn:hover {
   background-color: #d1fdd0;
+}
+
+header .inner .logout-btn {
+  background-color: #fff781;
+  border: 1px solid #fff44e;
+  padding: 1rem 2rem;
+}
+
+header .inner .logout-btn:hover {
+  background-color: #fffab4;
 }
 
 /* ToDoリスト */
@@ -486,6 +497,21 @@ header .inner .register-btn:hover {
   }
 }
 
+#login .inner .page-link {
+  display: flex;
+  justify-content: space-between;
+  width: 90%;
+  margin: 0 auto;
+}
+
+#login .inner .page-link a {
+  transition: all 0.3s ease 0s;
+}
+
+#login .inner .page-link a:hover {
+  color: red;
+}
+
 /* ログイン画面 */
 /* 登録画面 */
 #register .inner {
@@ -523,6 +549,17 @@ header .inner .register-btn:hover {
   #register .inner .input_info .submit-btn {
     padding: 0.6rem 3rem;
   }
+}
+
+#register .inner a {
+  display: block;
+  text-align: left;
+  padding-left: 5%;
+  transition: all 0.3s ease 0s;
+}
+
+#register .inner a:hover {
+  color: red;
 }
 
 /* 登録画面 */

@@ -162,7 +162,7 @@ section {
     /* グラデーションで折り目がついた感じに */
     background: linear-gradient(to right, $pink 0%, $dark-pink 0.5%, $dark-pink 13%, $pink 16%);
     display: block;
-    margin: 0 auto 2rem;
+    margin: 0 auto 4rem;
     padding: 4rem 5rem 3rem;
     position: relative;
     width: 90%;
@@ -217,6 +217,7 @@ section {
         font-family: inherit;
         font-size: 2.2rem;
         padding: 0.5rem 0.8rem;
+        transition: all 0.3s ease 0s;
         width: 80%;
         @include mq('sp') {
             width: 100%;
@@ -313,6 +314,16 @@ header {
 
             &:hover {
                 background-color: lighten($green,10%);
+            }
+        }
+
+        .logout-btn {
+            background-color: $yellow;
+            border: 1px solid darken($yellow, 10%);
+            padding: 1rem 2rem;
+
+            &:hover {
+                background-color: lighten($yellow,10%);
             }
         }
     }
@@ -436,6 +447,21 @@ header {
             } /* 送信ボタン */
 
         } /* タスク入力 */
+
+        .page-link {
+            display: flex;
+            justify-content: space-between;
+            width: 90%;
+            margin: 0 auto;
+
+            a {
+                transition: all 0.3s ease 0s;
+                
+                &:hover {
+                    color: red;
+                }
+            }
+        }
             
     }
 }
@@ -476,7 +502,18 @@ header {
             } /* 送信ボタン */
 
         } /* タスク入力 */
-            
+
+        a {
+            display: block;
+            text-align: left;
+            padding-left: 5%;
+            transition: all 0.3s ease 0s;
+
+            &:hover {
+                color: red;
+            }
+        }
+ 
     }
 }
 /* 登録画面 */
