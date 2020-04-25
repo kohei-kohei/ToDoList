@@ -7,18 +7,16 @@ $errors = array();
 
 $csrf_token = htmlspecialchars(base64_encode(random_bytes(32)), ENT_QUOTES);
 
-// 不正アクセスの通告
-if (isset($_SESSION['error'])) {
-    echo $_SESSION['error'];
-}
-unset($_SESSION['error']);
 unset($_SESSION['username']);
 
-// 利用者の登録
+// 利用者のログイン
 if(isset($_POST['submit']) && $_POST['submit'] === "ログイン") {
     $user = htmlspecialchars($_POST['user'], ENT_QUOTES);
     $password = htmlspecialchars($_POST['password'], ENT_QUOTES);
     $post_token = htmlspecialchars($_POST['token'], ENT_QUOTES);
+
+    var_dump($post_token);
+    var_dump($_SESSION['token']);
 
     if (isset($post_token, $_SESSION['token']) && ($post_token === $_SESSION['token'])) {
         unset($post_token);
@@ -56,15 +54,11 @@ if(isset($_POST['submit']) && $_POST['submit'] === "ログイン") {
                 }
                 
             } else {
-                $errors['password'] = "パスワードを４文字以上で入力してください";
+                $errors['password'] = "パスワードを入力してください";
             }
             
         } else {
-            $errors['user'] = "名前を２文字以上で入力してください";
-            
-            if ($password === "" || mb_strlen($password) < 4) {
-                $errors['password'] = "パスワードを４文字以上で入力してください";
-            }
+            $errors['user'] = "名前を入力してください";
         }
 
         unset($user);
@@ -107,9 +101,19 @@ $_SESSION['token'] = $csrf_token;
             </div>
         </header>
 
+
         <!-- ログイン画面 -->
         <section id="login">
             <div class="inner">
+                
+                <?php
+                // 不正アクセスの通告
+                if (isset($_SESSION['error'])) {
+                    echo "<p class='alert'>※". $_SESSION['error'] ."</p>";
+                    unset($_SESSION['error']);
+                }
+                ?>
+                
                 <h2 class="title">ログイン画面</h2>
 
                 <form action="login.php" method="post" class="input_info">

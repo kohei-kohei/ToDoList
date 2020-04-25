@@ -5,55 +5,79 @@ require_once('functions.php');
 session_start();
 $errors = array();
 
+$csrf_token = htmlspecialchars(base64_encode(random_bytes(32)), ENT_QUOTES);
+
 unset($_SESSION['username']);
-unset($_SESSION['token']);
 
 // タスクの登録
 if(isset($_POST['submit']) && $_POST['submit'] === "追加") {
     $task = htmlspecialchars($_POST['task'], ENT_QUOTES);
+    $post_token = htmlspecialchars($_POST['token'], ENT_QUOTES);
 
-    // 空チェックと文字数チェック
-    if ($task !== "" && mb_strlen($task) >= 2) {
+    if (isset($post_token, $_SESSION['token']) && ($post_token === $_SESSION['token'])) {
+        unset($post_token);
 
-        $dbh = db_connect();
-        
-        $sql = 'INSERT INTO tasks (task, done) VALUES (?, 0)';   // SQLの命令文
-        
-        // PDOStatementインスタンス
-        $stmt = $dbh->prepare($sql);
-        $stmt->bindValue(1, $task, PDO::PARAM_STR);
-        $stmt->execute();
-        
-        $dbh = null;
+        // 空チェックと文字数チェック
+        if ($task !== "" && mb_strlen($task) >= 2) {
 
-        header('Location: ./');
-        exit();
-        
+            $dbh = db_connect();
+            
+            $sql = 'INSERT INTO tasks (task, done) VALUES (?, 0)';   // SQLの命令文
+            
+            // PDOStatementインスタンス
+            $stmt = $dbh->prepare($sql);
+            $stmt->bindValue(1, $task, PDO::PARAM_STR);
+            $stmt->execute();
+            
+            $dbh = null;
+
+            header('Location: ./index.php');
+            exit();
+            
+        } else {
+            $errors['task'] = "タスクを２文字以上で入力してください";
+        }
+        unset($task);
+
     } else {
-        $errors['task'] = "タスクを２文字以上で入力してください";
+        $_SESSION['error'] = "不正なアクセスです";
+        header('Location: ./index.php');
+        exit();
     }
-    unset($task);
 }
 
 // 完了ボタンを押したら非表示にする
 if(isset($_POST['method']) && ($_POST['method'] === 'put')) {
-
+    
     $id = htmlspecialchars($_POST['id'], ENT_QUOTES);
     $id = (int)$id;
+    $post_token = htmlspecialchars($_POST['token'], ENT_QUOTES);
 
-    $dbh = db_connect();
+    if (isset($post_token, $_SESSION['token']) && ($post_token === $_SESSION['token'])) {
+        unset($post_token);
 
-    $sql = 'UPDATE tasks SET done = 1 WHERE id = ?';
-    $stmt = $dbh->prepare($sql);
+        echo "成功";
+        $dbh = db_connect();
 
-    $stmt->bindValue(1, $id, PDO::PARAM_INT);
-    $stmt->execute();
+        $sql = 'UPDATE tasks SET done = 1 WHERE id = ?';
+        $stmt = $dbh->prepare($sql);
 
-    $dbh = null;
+        $stmt->bindValue(1, $id, PDO::PARAM_INT);
+        $stmt->execute();
 
-    header('Location: ./index.php');
-    exit();
+        $dbh = null;
+
+        header('Location: ./index.php');
+        exit();
+
+    } else {
+        $_SESSION['error'] = "不正なアクセスです";
+        header('Location: ./index.php');
+        exit();
+    }
 }
+$_SESSION['token'] = $csrf_token;
+
 ?>
 
 <!DOCTYPE html>
@@ -87,6 +111,15 @@ if(isset($_POST['method']) && ($_POST['method'] === 'put')) {
         <!-- Todoリスト -->
         <section id="todo">
             <div class="inner">
+
+                <?php
+                // 不正アクセスの通告
+                if (isset($_SESSION['error'])) {
+                    echo "<p class='alert'>※". $_SESSION['error'] ."</p>";
+                    unset($_SESSION['error']);
+                }
+                ?>
+
                 <h2 class="title">Todoリスト</h2>
 
                 <ul>
@@ -107,7 +140,9 @@ if(isset($_POST['method']) && ($_POST['method'] === 'put')) {
                     print '
                         <form action="index.php" method="post">
                             <input type="hidden" name="method" value="put">
-                            <input type="hidden" name="id" value=" ' . $tasks['id'] .' ">
+                            <input type="hidden" name="id" value="' . $tasks['id'] .'">
+
+                            <input type="hidden" name="token" value="'. $csrf_token .'">
                             <button type="submit">完了</button>
                         </form>
                     ';
@@ -126,12 +161,12 @@ if(isset($_POST['method']) && ($_POST['method'] === 'put')) {
                         <input class="input-text" type="text" name="task" placeholder="タスクを入力してください">
                     </div>
 
+                    <input type="hidden" name="token" value="<?php echo $csrf_token; ?>">
                     <input class="submit-btn" type="submit" name="submit" value="追加">
                 </form>
                 
             </div>
         </section> <!-- /Todoリスト -->
 
-        
     </body>
 </html>
