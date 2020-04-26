@@ -167,6 +167,15 @@ section {
     position: relative;
     width: 90%;
 
+    @include mq('tab') {
+        padding: 4rem 4rem 3rem;
+    }
+    @include mq('sp') {
+        margin-top: 2rem;
+        padding: 2rem;
+        width: 100%;
+    }
+
     /* ドロップシャドウを少し斜めに配置して、立体感を出す */
     &::after{
         content:"";
@@ -181,10 +190,6 @@ section {
         box-shadow: 0 5px 5px rgba(0,0,0,0.3);
         transform: rotate(2deg);
     }
-    @include mq('sp'){
-        margin-top: 2rem;
-        padding: 2rem 3rem;
-    }
 
     /* 横並べにする */
     .flex {
@@ -198,8 +203,9 @@ section {
         p {
             margin-right: auto;
             @include mq('sp') {
-                width: 100%;
+                text-align: left;
                 margin: 1rem 0;
+                width: 100%;
             }
 
         }
@@ -219,6 +225,9 @@ section {
         padding: 0.5rem 0.8rem;
         transition: all 0.3s ease 0s;
         width: 80%;
+        @include mq('tab') {
+            width: 75%;
+        }
         @include mq('sp') {
             width: 100%;
             font-size: 1.6rem;
@@ -228,6 +237,10 @@ section {
             border-bottom: 1px solid rgba(59, 105, 255, 1);
             outline: none;
             box-shadow: 0 10px 4px -4px rgba(59, 105, 255, 0.2);
+        }
+
+        &::placeholder {
+            color: lighten($word-color, 20%);
         }
     } /* タスクの入力欄 */
 
@@ -250,7 +263,7 @@ section {
 
         @include mq("sp") {
             padding: 0.6rem 3rem;
-            font-size: 1.8rem;
+            font-size: 1.6rem;
             margin: 2rem auto;
         }
         
@@ -284,10 +297,16 @@ header {
         justify-content: space-between;
         padding: 0 8rem;
         height: 8rem;
+        @include mq('sp') {
+            padding: 0 2rem;
+        }
 
         p {
             color: white;
             font-size: 4rem;
+            @include mq('sp') {
+                font-size: 2.5rem;
+            }
         }
  
         a {
@@ -301,6 +320,10 @@ header {
             font-weight: 400;
             padding: 1rem 3rem;
             transition: all 0.3s ease 0s;
+            @include mq('sp') {
+                font-size: 1.6rem;
+                padding: .5rem 1.5rem;
+            }
             
             &:hover {
                 background-color: lighten($blue,10%);
@@ -311,6 +334,9 @@ header {
             background-color: $green;
             border: 1px solid darken($green, 10%);
             padding: 1rem 5rem;
+            @include mq('sp') {
+                padding: .5rem 2.5rem;
+            }
 
             &:hover {
                 background-color: lighten($green,10%);
@@ -321,6 +347,9 @@ header {
             background-color: $yellow;
             border: 1px solid darken($yellow, 10%);
             padding: 1rem 2rem;
+            @include mq('sp') {
+                padding: .5rem 1rem;
+            }
 
             &:hover {
                 background-color: lighten($yellow,10%);
@@ -333,11 +362,24 @@ header {
 #todo {
     .inner {
 
+        .introduction {
+            background-color: rgba($gray, .8);
+            display: inline-block;
+            padding: .35rem 2rem;
+            margin-bottom: 4rem;
+            @include mq('sp') {
+                text-align: left;
+                padding: 0.5rem 1rem;
+                margin-bottom: 1rem;
+            }
+        }
+
         /* タスクの表示 */
         ul {
             margin: 0 auto 8rem;
 
             li {
+                align-items: center;
                 /* グラデーションで折り目がついた感じに */
                 background: linear-gradient(to right, $pink 0%, $dark-pink 0.5%, $dark-pink 13%, $pink 16%);
                 margin: 0 auto 2rem;
@@ -379,6 +421,7 @@ header {
                         margin-left: auto;
                         outline: none;
                         padding: .3rem 1rem;
+                        white-space: nowrap;
                         
                         @include mq('sp') {
                             font-size: 1.4rem;
@@ -451,11 +494,21 @@ header {
         .page-link {
             display: flex;
             justify-content: space-between;
-            width: 90%;
             margin: 0 auto;
+            text-decoration: underline;
+            width: 90%;
+            @include mq('sp') {
+                display: block;
+                width: 100%;
+            }
 
             a {
                 transition: all 0.3s ease 0s;
+                @include mq('sp') {
+                    display: block;
+                    font-size: 1.6rem;
+                    margin-bottom: 2rem;
+                }
                 
                 &:hover {
                     color: red;
@@ -505,9 +558,14 @@ header {
 
         a {
             display: block;
-            text-align: left;
             padding-left: 5%;
+            text-align: left;
+            text-decoration: underline;
             transition: all 0.3s ease 0s;
+            @include mq('sp') {
+                padding-left: 0;
+                font-size: 1.6rem;
+            }
 
             &:hover {
                 color: red;

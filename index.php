@@ -22,7 +22,7 @@ if(isset($_POST['submit']) && $_POST['submit'] === "追加") {
 
             $dbh = db_connect();
             
-            $sql = 'INSERT INTO tasks (task, done) VALUES (?, 0)';   // SQLの命令文
+            $sql = 'INSERT INTO tasks (task, user) VALUES (?, "demo")';   // SQLの命令文
             
             // PDOStatementインスタンス
             $stmt = $dbh->prepare($sql);
@@ -38,9 +38,12 @@ if(isset($_POST['submit']) && $_POST['submit'] === "追加") {
             $errors['task'] = "タスクを２文字以上で入力してください";
         }
         unset($task);
-
+        $_SESSION['pretoken'] = $_POST['token'];
     } else {
-        $_SESSION['error'] = "不正なアクセスです";
+        // リロードの時はエラーを出さない
+        if ($_SESSION['pretoken'] !== $post_token) {
+            $_SESSION['error'] = "不正なアクセスです";
+        }
         header('Location: ./index.php');
         exit();
     }
@@ -56,12 +59,11 @@ if(isset($_POST['method']) && ($_POST['method'] === 'put')) {
     if (isset($post_token, $_SESSION['token']) && ($post_token === $_SESSION['token'])) {
         unset($post_token);
 
-        echo "成功";
         $dbh = db_connect();
 
-        $sql = 'UPDATE tasks SET done = 1 WHERE id = ?';
-        $stmt = $dbh->prepare($sql);
+        $sql = "DELETE FROM tasks WHERE id = ?";
 
+        $stmt = $dbh->prepare($sql);
         $stmt->bindValue(1, $id, PDO::PARAM_INT);
         $stmt->execute();
 
@@ -103,7 +105,7 @@ $_SESSION['token'] = $csrf_token;
         <!-- ヘッダー -->
         <header>
             <div class="inner">
-                <p>Todoリスト デモ</p>
+                <p>Todoリスト</p>
                 <a href="./login.php">ログイン</a>
             </div>
         </header>
@@ -111,6 +113,10 @@ $_SESSION['token'] = $csrf_token;
         <!-- Todoリスト -->
         <section id="todo">
             <div class="inner">
+
+                <div>
+                    <p class="introduction">こちらはデモページです。自分専用に使いたい方は登録後、ログインしてください。</p>
+                </div>
 
                 <?php
                 // 不正アクセスの通告
@@ -126,7 +132,7 @@ $_SESSION['token'] = $csrf_token;
                 <?php 
                 $dbh = db_connect();
                 
-                $sql = 'SELECT id, task FROM tasks WHERE done = 0 ORDER BY id ASC';
+                $sql = 'SELECT id, task FROM tasks WHERE user = "demo" ORDER BY id ASC';
                 
                 $stmt = $dbh->prepare($sql);
                 $stmt->execute();

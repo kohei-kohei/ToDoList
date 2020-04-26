@@ -21,27 +21,42 @@ if(isset($_POST['submit']) && $_POST['submit'] === "登録") {
         // 空チェックと文字数チェック
         if ($user !== "" && mb_strlen($user) >= 2) {
             if ($password !== "" && mb_strlen($password) >= 4) {
-
+                
                 $dbh = db_connect();
                 
-                $sql = 'INSERT INTO users (user, password) VALUES (?, ?)';   // SQLの命令文
+                // 名前の被りを探す
+                $sql = 'SELECT COUNT(*) FROM users WHERE user = ?';
                 
-                try {
+                $stmt = $dbh->prepare($sql);
+                $stmt->bindValue(1, $user, PDO::PARAM_STR);
+                $stmt->execute();
+                
+                $count = (int)$stmt->fetchColumn();
 
-                    // PDOStatementインスタンス
-                    $stmt = $dbh->prepare($sql);
-                    $stmt->bindValue(1, $user, PDO::PARAM_STR);
-                    $stmt->bindValue(2, password_hash($password, PASSWORD_DEFAULT), PDO::PARAM_STR);
-                    $stmt->execute();
-                    
-                    $dbh = null;
-                    
-                    header('Location: ./login.php');
-                    exit();
+                if ($count === 0) {
 
-                } catch(Exception $e) {
-                    print "データベースの接続に失敗しました： " . $e->getMessage() . "<br/>";
-                    exit();
+                    $sql = 'INSERT INTO users (user, password) VALUES (?, ?)';   // SQLの命令文
+                    
+                    try {
+                        
+                        // PDOStatementインスタンス
+                        $stmt = $dbh->prepare($sql);
+                        $stmt->bindValue(1, $user, PDO::PARAM_STR);
+                        $stmt->bindValue(2, password_hash($password, PASSWORD_DEFAULT), PDO::PARAM_STR);
+                        $stmt->execute();
+                        
+                        $dbh = null;
+                        
+                        header('Location: ./login.php');
+                        exit();
+                        
+                    } catch(Exception $e) {
+                        print "データベースの接続に失敗しました： " . $e->getMessage() . "<br/>";
+                        exit();
+                    }
+
+                } else {
+                    $errors['user'] = "すでに登録されている名前です";
                 }
 
             } else {
@@ -56,8 +71,13 @@ if(isset($_POST['submit']) && $_POST['submit'] === "登録") {
             }
         }
         unset($user);
+        unset($password);
+        $_SESSION['pretoken'] = $_POST['token'];
     } else {
-        $_SESSION['error'] = "不正なアクセスです";
+        // リロードの時はエラーを出さない
+        if ($_SESSION['pretoken'] !== $post_token) {
+            $_SESSION['error'] = "不正なアクセスです";
+        }
         header('Location: ./register.php');
         exit();
     }

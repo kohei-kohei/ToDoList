@@ -15,9 +15,6 @@ if(isset($_POST['submit']) && $_POST['submit'] === "ログイン") {
     $password = htmlspecialchars($_POST['password'], ENT_QUOTES);
     $post_token = htmlspecialchars($_POST['token'], ENT_QUOTES);
 
-    var_dump($post_token);
-    var_dump($_SESSION['token']);
-
     if (isset($post_token, $_SESSION['token']) && ($post_token === $_SESSION['token'])) {
         unset($post_token);
         
@@ -59,13 +56,20 @@ if(isset($_POST['submit']) && $_POST['submit'] === "ログイン") {
             
         } else {
             $errors['user'] = "名前を入力してください";
+
+            if ($password === "" || mb_strlen($password) < 4) {
+                $errors['password'] = "パスワードを入力してください";
+            }
         }
 
         unset($user);
         unset($password);
-
+        $_SESSION['pretoken'] = $_POST['token'];
     } else {
-        $_SESSION['error'] = "不正なアクセスです";
+        // リロードの時はエラーを出さない
+        if ($_SESSION['pretoken'] !== $post_token) {
+            $_SESSION['error'] = "不正なアクセスです";
+        }
         header('Location: ./login.php');
         exit();
     }

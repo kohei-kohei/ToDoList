@@ -51,11 +51,12 @@ if(isset($_POST['submit']) && $_POST['submit'] === "追加") {
 
             $dbh = db_connect();
             
-            $sql = 'INSERT INTO tasks (task, done) VALUES (?, 0)';   // SQLの命令文
+            $sql = 'INSERT INTO tasks (task, user) VALUES (?, ?)';   // SQLの命令文
             
             // PDOStatementインスタンス
             $stmt = $dbh->prepare($sql);
             $stmt->bindValue(1, $task, PDO::PARAM_STR);
+            $stmt->bindValue(2, $username, PDO::PARAM_STR);
             $stmt->execute();
             
             $dbh = null;
@@ -67,9 +68,12 @@ if(isset($_POST['submit']) && $_POST['submit'] === "追加") {
             $errors['task'] = "タスクを２文字以上で入力してください";
         }
         unset($task);
-
+        $_SESSION['pretoken'] = $_POST['token'];
     } else {
-        $_SESSION['error'] = "不正なアクセスです";
+        // リロードの時はエラーを出さない
+        if ($_SESSION['pretoken'] !== $post_token) {
+            $_SESSION['error'] = "不正なアクセスです";
+        }
         header('Location: ./login.php');
         exit();
     }
@@ -87,9 +91,9 @@ if(isset($_POST['method']) && ($_POST['method'] === 'put')) {
 
         $dbh = db_connect();
 
-        $sql = 'UPDATE tasks SET done = 1 WHERE id = ?';
-        $stmt = $dbh->prepare($sql);
+        $sql = "DELETE FROM tasks WHERE id = ?";
 
+        $stmt = $dbh->prepare($sql);
         $stmt->bindValue(1, $id, PDO::PARAM_INT);
         $stmt->execute();
 
@@ -143,7 +147,7 @@ $_SESSION['token'] = $csrf_token;
                 <?php
                 // 名前の表示
                 if (isset($username)) {
-                    echo "<p>ようこそ、". $username ."さん</p>";
+                    echo "<div><p class='introduction'>ようこそ、". $username ."さん</p></div>";
                 }
                 ?>
 
@@ -153,9 +157,10 @@ $_SESSION['token'] = $csrf_token;
                 <?php 
                 $dbh = db_connect();
                 
-                $sql = 'SELECT id, task FROM tasks WHERE done = 0 ORDER BY id ASC';
+                $sql = 'SELECT id, task FROM tasks WHERE user = ? ORDER BY id ASC';
                 
                 $stmt = $dbh->prepare($sql);
+                $stmt->bindValue(1, $username, PDO::PARAM_STR);
                 $stmt->execute();
                 
                 $dbh = null;
