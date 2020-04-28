@@ -43,32 +43,42 @@ if(isset($_POST['submit']) && $_POST['submit'] === "追加") {
 
     $post_token = htmlspecialchars($_POST['token'], ENT_QUOTES);
 
-    if (isset($post_token, $_SESSION['token']) && ($post_token === $_SESSION['token'])) {
-        unset($post_token);
-
-        // 空チェックと文字数チェック
-        if ($task !== "" && mb_strlen($task) >= 2) {
-
-            $dbh = db_connect();
+    if (isset($post_token, $_SESSION['token'])) {
+        if (($post_token === $_SESSION['token'])) {
             
-            $sql = 'INSERT INTO tasks (task, user) VALUES (?, ?)';   // SQLの命令文
-            
-            // PDOStatementインスタンス
-            $stmt = $dbh->prepare($sql);
-            $stmt->bindValue(1, $task, PDO::PARAM_STR);
-            $stmt->bindValue(2, $username, PDO::PARAM_STR);
-            $stmt->execute();
-            
-            $dbh = null;
+            unset($post_token);
 
-            header('Location: ./mytodolist.php');
-            exit();
+            // 空チェックと文字数チェック
+            if ($task !== "" && mb_strlen($task) >= 2) {
+
+                $dbh = db_connect();
+                
+                $sql = 'INSERT INTO tasks (task, user) VALUES (?, ?)';   // SQLの命令文
+                
+                // PDOStatementインスタンス
+                $stmt = $dbh->prepare($sql);
+                $stmt->bindValue(1, $task, PDO::PARAM_STR);
+                $stmt->bindValue(2, $username, PDO::PARAM_STR);
+                $stmt->execute();
+                
+                $dbh = null;
+
+                header('Location: ./mytodolist.php');
+                exit();
+                
+            } else {
+                $errors['task'] = "タスクを２文字以上で入力してください";
+            }
             
         } else {
-            $errors['task'] = "タスクを２文字以上で入力してください";
+            if ($_SESSION['pretoken'] !== $post_token) {
+                $_SESSION['error'] = "ブラウザで複数回読み込みがされています。ブラウザを変えて試してみてください。";
+            }
         }
+
         unset($task);
         $_SESSION['pretoken'] = $_POST['token'];
+        
     } else {
         // リロードの時はエラーを出さない
         if ($_SESSION['pretoken'] !== $post_token) {
@@ -86,21 +96,26 @@ if(isset($_POST['method']) && ($_POST['method'] === 'put')) {
     $id = (int)$id;
     $post_token = htmlspecialchars($_POST['token'], ENT_QUOTES);
 
-    if (isset($post_token, $_SESSION['token']) && ($post_token === $_SESSION['token'])) {
-        unset($post_token);
+    if (isset($post_token, $_SESSION['token'])) {
+        if (($post_token === $_SESSION['token'])) {
+            unset($post_token);
 
-        $dbh = db_connect();
+            $dbh = db_connect();
 
-        $sql = "DELETE FROM tasks WHERE id = ?";
+            $sql = "DELETE FROM tasks WHERE id = ?";
 
-        $stmt = $dbh->prepare($sql);
-        $stmt->bindValue(1, $id, PDO::PARAM_INT);
-        $stmt->execute();
+            $stmt = $dbh->prepare($sql);
+            $stmt->bindValue(1, $id, PDO::PARAM_INT);
+            $stmt->execute();
 
-        $dbh = null;
+            $dbh = null;
 
-        header('Location: ./mytodolist.php');
-        exit();
+            header('Location: ./mytodolist.php');
+            exit();
+            
+        } else {
+            $_SESSION['error'] = "ブラウザで複数回読み込みがされています。ブラウザを変えて試してみてください。";
+        }
 
     } else {
         $_SESSION['error'] = "不正なアクセスです";

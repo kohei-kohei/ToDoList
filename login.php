@@ -15,56 +15,64 @@ if(isset($_POST['submit']) && $_POST['submit'] === "ログイン") {
     $password = htmlspecialchars($_POST['password'], ENT_QUOTES);
     $post_token = htmlspecialchars($_POST['token'], ENT_QUOTES);
 
-    if (isset($post_token, $_SESSION['token']) && ($post_token === $_SESSION['token'])) {
-        unset($post_token);
-        
-        // 空チェックと文字数チェック
-        if ($user !== "" && mb_strlen($user) >= 2) {
-            if ($password !== "" && mb_strlen($password) >= 4) {
-                
-                $dbh = db_connect();
-                
-                $sql = 'SELECT * FROM users WHERE user = ?'; // SQLの命令文
-                
-                try {
+    if (isset($post_token, $_SESSION['token'])) {
+        if (($post_token === $_SESSION['token'])) {
+            unset($post_token);
+            
+            // 空チェックと文字数チェック
+            if ($user !== "" && mb_strlen($user) >= 2) {
+                if ($password !== "" && mb_strlen($password) >= 4) {
                     
-                    // PDOStatementインスタンス
-                    $stmt = $dbh->prepare($sql);
-                    $stmt->bindValue(1, $user, PDO::PARAM_STR);
-                    $stmt->execute();
+                    $dbh = db_connect();
                     
-                    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                    $sql = 'SELECT * FROM users WHERE user = ?'; // SQLの命令文
                     
-                    if (password_verify($password, $result['password'])) {
-                        $_SESSION['username'] = $user; 
-                        header('Location: ./mytodolist.php');
+                    try {
+                        
+                        // PDOStatementインスタンス
+                        $stmt = $dbh->prepare($sql);
+                        $stmt->bindValue(1, $user, PDO::PARAM_STR);
+                        $stmt->execute();
+                        
+                        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                        
+                        if (password_verify($password, $result['password'])) {
+                            $_SESSION['username'] = $user; 
+                            header('Location: ./mytodolist.php');
+                            exit();
+                        } else {
+                            $errors['login'] = '名前あるいはパスワードに誤りがあります';
+                        } 
+                        
+                        $dbh = null;
+                        
+                    } catch(Exception $e) {
+                        print "データベースの接続に失敗しました： " . $e->getMessage() . "<br/>";
                         exit();
-                    } else {
-                        $errors['login'] = '名前あるいはパスワードに誤りがあります';
-                    } 
+                    }
                     
-                    $dbh = null;
-                    
-                } catch(Exception $e) {
-                    print "データベースの接続に失敗しました： " . $e->getMessage() . "<br/>";
-                    exit();
+                } else {
+                    $errors['password'] = "パスワードを入力してください";
                 }
                 
             } else {
-                $errors['password'] = "パスワードを入力してください";
+                $errors['user'] = "名前を入力してください";
+
+                if ($password === "" || mb_strlen($password) < 4) {
+                    $errors['password'] = "パスワードを入力してください";
+                }
             }
+
             
         } else {
-            $errors['user'] = "名前を入力してください";
-
-            if ($password === "" || mb_strlen($password) < 4) {
-                $errors['password'] = "パスワードを入力してください";
+            if ($_SESSION['pretoken'] !== $post_token) {
+                $_SESSION['error'] = "ブラウザで複数回読み込みがされています。ブラウザを変えて試してみてください。";
             }
         }
-
         unset($user);
         unset($password);
         $_SESSION['pretoken'] = $_POST['token'];
+        
     } else {
         // リロードの時はエラーを出さない
         if ($_SESSION['pretoken'] !== $post_token) {

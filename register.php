@@ -15,64 +15,72 @@ if(isset($_POST['submit']) && $_POST['submit'] === "登録") {
     $password = htmlspecialchars($_POST['password'], ENT_QUOTES);
     $post_token = htmlspecialchars($_POST['token'], ENT_QUOTES);
 
-    if (isset($post_token, $_SESSION['token']) && ($post_token === $_SESSION['token'])) {
-        unset($post_token);
+    if (isset($post_token, $_SESSION['token'])) {
+        if (($post_token === $_SESSION['token'])) {
+            unset($post_token);
 
-        // 空チェックと文字数チェック
-        if ($user !== "" && mb_strlen($user) >= 2) {
-            if ($password !== "" && mb_strlen($password) >= 4) {
-                
-                $dbh = db_connect();
-                
-                // 名前の被りを探す
-                $sql = 'SELECT COUNT(*) FROM users WHERE user = ?';
-                
-                $stmt = $dbh->prepare($sql);
-                $stmt->bindValue(1, $user, PDO::PARAM_STR);
-                $stmt->execute();
-                
-                $count = (int)$stmt->fetchColumn();
-
-                if ($count === 0) {
-
-                    $sql = 'INSERT INTO users (user, password) VALUES (?, ?)';   // SQLの命令文
+            // 空チェックと文字数チェック
+            if ($user !== "" && mb_strlen($user) >= 2) {
+                if ($password !== "" && mb_strlen($password) >= 4) {
                     
-                    try {
+                    $dbh = db_connect();
+                    
+                    // 名前の被りを探す
+                    $sql = 'SELECT COUNT(*) FROM users WHERE user = ?';
+                    
+                    $stmt = $dbh->prepare($sql);
+                    $stmt->bindValue(1, $user, PDO::PARAM_STR);
+                    $stmt->execute();
+                    
+                    $count = (int)$stmt->fetchColumn();
+
+                    if ($count === 0) {
+
+                        $sql = 'INSERT INTO users (user, password) VALUES (?, ?)';   // SQLの命令文
                         
-                        // PDOStatementインスタンス
-                        $stmt = $dbh->prepare($sql);
-                        $stmt->bindValue(1, $user, PDO::PARAM_STR);
-                        $stmt->bindValue(2, password_hash($password, PASSWORD_DEFAULT), PDO::PARAM_STR);
-                        $stmt->execute();
-                        
-                        $dbh = null;
-                        
-                        header('Location: ./login.php');
-                        exit();
-                        
-                    } catch(Exception $e) {
-                        print "データベースの接続に失敗しました： " . $e->getMessage() . "<br/>";
-                        exit();
+                        try {
+                            
+                            // PDOStatementインスタンス
+                            $stmt = $dbh->prepare($sql);
+                            $stmt->bindValue(1, $user, PDO::PARAM_STR);
+                            $stmt->bindValue(2, password_hash($password, PASSWORD_DEFAULT), PDO::PARAM_STR);
+                            $stmt->execute();
+                            
+                            $dbh = null;
+                            
+                            header('Location: ./login.php');
+                            exit();
+                            
+                        } catch(Exception $e) {
+                            print "データベースの接続に失敗しました： " . $e->getMessage() . "<br/>";
+                            exit();
+                        }
+
+                    } else {
+                        $errors['user'] = "すでに登録されている名前です";
                     }
 
                 } else {
-                    $errors['user'] = "すでに登録されている名前です";
+                    $errors['password'] = "パスワードを４文字以上で入力してください";
                 }
-
+                
             } else {
-                $errors['password'] = "パスワードを４文字以上で入力してください";
+                $errors['user'] = "名前を２文字以上で入力してください";
+
+                if ($password === "" || mb_strlen($password) < 4) {
+                    $errors['password'] = "パスワードを４文字以上で入力してください";
+                }
             }
             
         } else {
-            $errors['user'] = "名前を２文字以上で入力してください";
-
-            if ($password === "" || mb_strlen($password) < 4) {
-                $errors['password'] = "パスワードを４文字以上で入力してください";
+            if ($_SESSION['pretoken'] !== $post_token) {
+                $_SESSION['error'] = "ブラウザで複数回読み込みがされています。ブラウザを変えて試してみてください。";
             }
         }
         unset($user);
         unset($password);
         $_SESSION['pretoken'] = $_POST['token'];
+ 
     } else {
         // リロードの時はエラーを出さない
         if ($_SESSION['pretoken'] !== $post_token) {

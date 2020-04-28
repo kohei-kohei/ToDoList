@@ -529,6 +529,9 @@ header .inner .logout-btn:hover {
 }
 
 #todo .inner ul li form button {
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
   -webkit-appearance: none;
      -moz-appearance: none;
           appearance: none;
