@@ -5,45 +5,39 @@ require_once('functions.php');
 session_start();
 $errors = array();
 
-$csrf_token = htmlspecialchars(base64_encode(random_bytes(32)), ENT_QUOTES);
-
-unset($_SESSION['username']);
+//$csrf_token = htmlspecialchars(base64_encode(random_bytes(32)), ENT_QUOTES);
+$token = "ashdg784t59/84gbefjc00dkslnfe/fwp23r9";
+$csrf_token = password_hash($token, PASSWORD_DEFAULT);
 
 // タスクの登録
-if(isset($_POST['submit']) && $_POST['submit'] === "追加") {
-    $task = htmlspecialchars($_POST['task'], ENT_QUOTES);
+if (isset($_POST['submit']) && $_POST['submit'] === "追加") {
     $post_token = htmlspecialchars($_POST['token'], ENT_QUOTES);
     
-    if (isset($post_token, $_SESSION['token'])) {
-        if (($post_token === $_SESSION['token'])) {
-
-            unset($post_token);
+    if (isset($post_token, $_SESSION['token']) && password_verify($token, $_SESSION['token']) && password_verify($token, $post_token)) {
+        unset($post_token);
+        $task = htmlspecialchars($_POST['task'], ENT_QUOTES);
+        
+        // 空チェックと文字数チェック
+        if ($task !== "" && mb_strlen($task) >= 2) {
             
-            // 空チェックと文字数チェック
-            if ($task !== "" && mb_strlen($task) >= 2) {
-                
-                $dbh = db_connect();
-                
-                $sql = 'INSERT INTO tasks (task, user) VALUES (?, "demo")';   // SQLの命令文
-                
-                // PDOStatementインスタンス
-                $stmt = $dbh->prepare($sql);
-                $stmt->bindValue(1, $task, PDO::PARAM_STR);
-                $stmt->execute();
-                
-                $dbh = null;
-                
-                header('Location: ./index.php');
-                exit();
-                
-            } else {
-                $errors['task'] = "タスクを２文字以上で入力してください";
-            }
+            $dbh = db_connect();
+            
+            $sql = 'INSERT INTO tasks (task, user) VALUES (?, "demo")';   // SQLの命令文
+            
+            // PDOStatementインスタンス
+            $stmt = $dbh->prepare($sql);
+            $stmt->bindValue(1, $task, PDO::PARAM_STR);
+            $stmt->execute();
+            
+            $dbh = null;
+            
+            header('Location: ./index.php');
+            exit();
+            
         } else {
-            if ($_SESSION['pretoken'] !== $post_token) {
-                $_SESSION['error'] = "ブラウザで複数回読み込みがされています。ブラウザを変えて試してみてください。";
-            }
+            $errors['task'] = "タスクを２文字以上で入力してください";
         }
+    
         unset($task);
         $_SESSION['pretoken'] = $_POST['token'];
     } else {
@@ -58,31 +52,25 @@ if(isset($_POST['submit']) && $_POST['submit'] === "追加") {
 
 // 完了ボタンを押したら非表示にする
 if(isset($_POST['method']) && ($_POST['method'] === 'put')) {
-    
-    $id = htmlspecialchars($_POST['id'], ENT_QUOTES);
-    $id = (int)$id;
     $post_token = htmlspecialchars($_POST['token'], ENT_QUOTES);
+    
+    if (isset($post_token, $_SESSION['token']) && password_verify($token, $_SESSION['token']) && password_verify($token, $post_token)) {
+        unset($post_token);
+        $id = htmlspecialchars($_POST['id'], ENT_QUOTES);
+        $id = (int)$id;
 
-    if (isset($post_token, $_SESSION['token'])) {
-        if (($post_token === $_SESSION['token'])) {
-            unset($post_token);
+        $dbh = db_connect();
 
-            $dbh = db_connect();
+        $sql = "DELETE FROM tasks WHERE id = ?";
 
-            $sql = "DELETE FROM tasks WHERE id = ?";
+        $stmt = $dbh->prepare($sql);
+        $stmt->bindValue(1, $id, PDO::PARAM_INT);
+        $stmt->execute();
 
-            $stmt = $dbh->prepare($sql);
-            $stmt->bindValue(1, $id, PDO::PARAM_INT);
-            $stmt->execute();
+        $dbh = null;
 
-            $dbh = null;
-
-            header('Location: ./index.php');
-            exit();
-
-        } else {
-            $_SESSION['error'] = "ブラウザで複数回読み込みがされています。ブラウザを変えて試してみてください。";
-        }
+        header('Location: ./index.php');
+        exit();
 
     } else {
         $_SESSION['error'] = "不正なアクセスです";

@@ -343,16 +343,34 @@ header {
             }
         }
 
-        .logout-btn {
-            background-color: $yellow;
-            border: 1px solid darken($yellow, 10%);
-            padding: 1rem 2rem;
-            @include mq('sp') {
-                padding: .5rem 1rem;
-            }
+        form {
+            margin-bottom: 0;
 
-            &:hover {
-                background-color: lighten($yellow,10%);
+            .logout-btn {
+                align-items: center;
+                appearance: none;
+                background: none;
+                background-color: $yellow;
+                border: 1px solid darken($yellow, 10%);
+                border-radius: 12px;
+                color: $word-color;
+                cursor: pointer;
+                font-size: 1.8rem;
+                display: inline-block;
+                font-size: 1.8rem;
+                font-weight: 400;
+                outline: none;
+                padding: 1rem 2rem;
+                transition: all 0.3s ease 0s;
+                white-space: nowrap;
+                @include mq('sp') {
+                    padding: .5rem 1rem;
+                    font-size: 1.6rem;
+                }
+                
+                &:hover {
+                    background-color: lighten($yellow,10%);
+                }
             }
         }
     }
@@ -409,6 +427,7 @@ header {
 
                 form {
                     margin-left: auto;
+                    margin-bottom: 0;
                     
                     /* 完了ボタン */
                     button {

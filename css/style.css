@@ -439,19 +439,42 @@ header .inner .register-btn:hover {
   background-color: #d1fdd0;
 }
 
-header .inner .logout-btn {
+header .inner form {
+  margin-bottom: 0;
+}
+
+header .inner form .logout-btn {
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  background: none;
   background-color: #fff781;
   border: 1px solid #fff44e;
+  border-radius: 12px;
+  color: #3e3e3e;
+  cursor: pointer;
+  font-size: 1.8rem;
+  display: inline-block;
+  font-size: 1.8rem;
+  font-weight: 400;
+  outline: none;
   padding: 1rem 2rem;
+  -webkit-transition: all 0.3s ease 0s;
+  transition: all 0.3s ease 0s;
+  white-space: nowrap;
 }
 
 @media screen and (max-width: 767px) {
-  header .inner .logout-btn {
+  header .inner form .logout-btn {
     padding: .5rem 1rem;
+    font-size: 1.6rem;
   }
 }
 
-header .inner .logout-btn:hover {
+header .inner form .logout-btn:hover {
   background-color: #fffab4;
 }
 
@@ -524,6 +547,7 @@ header .inner .logout-btn:hover {
 
 #todo .inner ul li form {
   margin-left: auto;
+  margin-bottom: 0;
   /* 完了ボタン */
   /* 完了ボタン */
 }

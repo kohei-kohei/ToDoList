@@ -5,13 +5,13 @@ require_once('functions.php');
 session_start();
 $errors = array();
 
-$token = htmlspecialchars($_SESSION['token'], ENT_QUOTES);
-$csrf_token = htmlspecialchars(base64_encode(random_bytes(32)), ENT_QUOTES);
+$token = "ashdg784t59/84gbefjc00dkslnfe/fwp23r9";
+$csrf_token = password_hash($token, PASSWORD_DEFAULT);
 
 // CSRF対策
 if (!isset($_SESSION['username']) || !isset($_SESSION['token'])) {
     $_SESSION['error'] = "不正なアクセスです";
-    header('Location: ./login.php');
+    header('Location: ./mytodolist.php');
     exit();
 
 } else {
@@ -39,46 +39,37 @@ if (!isset($_SESSION['username']) || !isset($_SESSION['token'])) {
 
 // タスクの登録
 if(isset($_POST['submit']) && $_POST['submit'] === "追加") {
-    $task = htmlspecialchars($_POST['task'], ENT_QUOTES);
-
     $post_token = htmlspecialchars($_POST['token'], ENT_QUOTES);
+    
+    if (isset($post_token, $_SESSION['token']) && password_verify($token, $_SESSION['token']) && password_verify($token, $post_token)) {
+        unset($post_token);
+        $task = htmlspecialchars($_POST['task'], ENT_QUOTES);
 
-    if (isset($post_token, $_SESSION['token'])) {
-        if (($post_token === $_SESSION['token'])) {
+        // 空チェックと文字数チェック
+        if ($task !== "" && mb_strlen($task) >= 2) {
+
+            $dbh = db_connect();
             
-            unset($post_token);
+            $sql = 'INSERT INTO tasks (task, user) VALUES (?, ?)';   // SQLの命令文
+            
+            // PDOStatementインスタンス
+            $stmt = $dbh->prepare($sql);
+            $stmt->bindValue(1, $task, PDO::PARAM_STR);
+            $stmt->bindValue(2, $username, PDO::PARAM_STR);
+            $stmt->execute();
+            
+            $dbh = null;
 
-            // 空チェックと文字数チェック
-            if ($task !== "" && mb_strlen($task) >= 2) {
-
-                $dbh = db_connect();
-                
-                $sql = 'INSERT INTO tasks (task, user) VALUES (?, ?)';   // SQLの命令文
-                
-                // PDOStatementインスタンス
-                $stmt = $dbh->prepare($sql);
-                $stmt->bindValue(1, $task, PDO::PARAM_STR);
-                $stmt->bindValue(2, $username, PDO::PARAM_STR);
-                $stmt->execute();
-                
-                $dbh = null;
-
-                header('Location: ./mytodolist.php');
-                exit();
-                
-            } else {
-                $errors['task'] = "タスクを２文字以上で入力してください";
-            }
+            header('Location: ./mytodolist.php');
+            exit();
             
         } else {
-            if ($_SESSION['pretoken'] !== $post_token) {
-                $_SESSION['error'] = "ブラウザで複数回読み込みがされています。ブラウザを変えて試してみてください。";
-            }
+            $errors['task'] = "タスクを２文字以上で入力してください";
         }
-
+        
         unset($task);
         $_SESSION['pretoken'] = $_POST['token'];
-        
+
     } else {
         // リロードの時はエラーを出さない
         if ($_SESSION['pretoken'] !== $post_token) {
@@ -91,31 +82,25 @@ if(isset($_POST['submit']) && $_POST['submit'] === "追加") {
 
 // 完了ボタンを押したら非表示にする
 if(isset($_POST['method']) && ($_POST['method'] === 'put')) {
-
-    $id = htmlspecialchars($_POST['id'], ENT_QUOTES);
-    $id = (int)$id;
     $post_token = htmlspecialchars($_POST['token'], ENT_QUOTES);
+    
+    if (isset($post_token, $_SESSION['token']) && password_verify($token, $_SESSION['token']) && password_verify($token, $post_token)) {
+        unset($post_token);
+        $id = htmlspecialchars($_POST['id'], ENT_QUOTES);
+        $id = (int)$id;
+        
+        $dbh = db_connect();
 
-    if (isset($post_token, $_SESSION['token'])) {
-        if (($post_token === $_SESSION['token'])) {
-            unset($post_token);
+        $sql = "DELETE FROM tasks WHERE id = ?";
 
-            $dbh = db_connect();
+        $stmt = $dbh->prepare($sql);
+        $stmt->bindValue(1, $id, PDO::PARAM_INT);
+        $stmt->execute();
 
-            $sql = "DELETE FROM tasks WHERE id = ?";
+        $dbh = null;
 
-            $stmt = $dbh->prepare($sql);
-            $stmt->bindValue(1, $id, PDO::PARAM_INT);
-            $stmt->execute();
-
-            $dbh = null;
-
-            header('Location: ./mytodolist.php');
-            exit();
-            
-        } else {
-            $_SESSION['error'] = "ブラウザで複数回読み込みがされています。ブラウザを変えて試してみてください。";
-        }
+        header('Location: ./mytodolist.php');
+        exit();
 
     } else {
         $_SESSION['error'] = "不正なアクセスです";
@@ -123,6 +108,25 @@ if(isset($_POST['method']) && ($_POST['method'] === 'put')) {
         exit();
     }
 }
+
+// ログアウトを押したら非表示にする
+if(isset($_POST['logout']) && ($_POST['logout'] === 'out')) {
+    $post_token = htmlspecialchars($_POST['token'], ENT_QUOTES);
+    
+    if (isset($post_token, $_SESSION['token']) && password_verify($token, $_SESSION['token']) && password_verify($token, $post_token)) {
+        unset($post_token);
+        unset($_SESSION['username']);
+
+        header('Location: ./index.php');
+        exit();
+
+    } else {
+        $_SESSION['error'] = "不正なアクセスです";
+        header('Location: ./login.php');
+        exit();
+    }
+}
+
 $_SESSION['token'] = $csrf_token;
 
 ?>
@@ -151,7 +155,12 @@ $_SESSION['token'] = $csrf_token;
         <header>
             <div class="inner">
                 <p>Todoリスト</p>
-                <a href="./index.php" class="logout-btn">ログアウト</a>
+                <form action="mytodolist.php" method="post">
+                    <input type="hidden" name="logout" value="out">
+
+                    <input type="hidden" name="token" value="<?php echo $csrf_token; ?>">
+                    <button class="logout-btn" type="submit">ログアウト</button>
+                </form>
             </div>
         </header>
                   

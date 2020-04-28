@@ -5,76 +5,68 @@ require_once('functions.php');
 session_start();
 $errors = array();
 
-$csrf_token = htmlspecialchars(base64_encode(random_bytes(32)), ENT_QUOTES);
-
-unset($_SESSION['username']);
+$token = "ashdg784t59/84gbefjc00dkslnfe/fwp23r9";
+$csrf_token = password_hash($token, PASSWORD_DEFAULT);
 
 // 利用者の登録
 if(isset($_POST['submit']) && $_POST['submit'] === "登録") {
-    $user = htmlspecialchars($_POST['user'], ENT_QUOTES);
-    $password = htmlspecialchars($_POST['password'], ENT_QUOTES);
-    $post_token = htmlspecialchars($_POST['token'], ENT_QUOTES);
+    $post_token = $_POST['token'];
+    
+    if (isset($post_token, $_SESSION['token']) && password_verify($token, $_SESSION['token']) && password_verify($token, $post_token)) {
+        unset($post_token);
+        $user = htmlspecialchars($_POST['user'], ENT_QUOTES);
+        $password = htmlspecialchars($_POST['password'], ENT_QUOTES);
 
-    if (isset($post_token, $_SESSION['token'])) {
-        if (($post_token === $_SESSION['token'])) {
-            unset($post_token);
+        // 空チェックと文字数チェック
+        if ($user !== "" && mb_strlen($user) >= 2) {
+            if ($password !== "" && mb_strlen($password) >= 4) {
+                
+                $dbh = db_connect();
+                
+                // 名前の被りを探す
+                $sql = 'SELECT COUNT(*) FROM users WHERE user = ?';
+                
+                $stmt = $dbh->prepare($sql);
+                $stmt->bindValue(1, $user, PDO::PARAM_STR);
+                $stmt->execute();
+                
+                $count = (int)$stmt->fetchColumn();
 
-            // 空チェックと文字数チェック
-            if ($user !== "" && mb_strlen($user) >= 2) {
-                if ($password !== "" && mb_strlen($password) >= 4) {
-                    
-                    $dbh = db_connect();
-                    
-                    // 名前の被りを探す
-                    $sql = 'SELECT COUNT(*) FROM users WHERE user = ?';
-                    
-                    $stmt = $dbh->prepare($sql);
-                    $stmt->bindValue(1, $user, PDO::PARAM_STR);
-                    $stmt->execute();
-                    
-                    $count = (int)$stmt->fetchColumn();
+                if ($count === 0) {
 
-                    if ($count === 0) {
-
-                        $sql = 'INSERT INTO users (user, password) VALUES (?, ?)';   // SQLの命令文
+                    $sql = 'INSERT INTO users (user, password) VALUES (?, ?)';   // SQLの命令文
+                    
+                    try {
                         
-                        try {
-                            
-                            // PDOStatementインスタンス
-                            $stmt = $dbh->prepare($sql);
-                            $stmt->bindValue(1, $user, PDO::PARAM_STR);
-                            $stmt->bindValue(2, password_hash($password, PASSWORD_DEFAULT), PDO::PARAM_STR);
-                            $stmt->execute();
-                            
-                            $dbh = null;
-                            
-                            header('Location: ./login.php');
-                            exit();
-                            
-                        } catch(Exception $e) {
-                            print "データベースの接続に失敗しました： " . $e->getMessage() . "<br/>";
-                            exit();
-                        }
-
-                    } else {
-                        $errors['user'] = "すでに登録されている名前です";
+                        // PDOStatementインスタンス
+                        $stmt = $dbh->prepare($sql);
+                        $stmt->bindValue(1, $user, PDO::PARAM_STR);
+                        $stmt->bindValue(2, password_hash($password, PASSWORD_DEFAULT), PDO::PARAM_STR);
+                        $stmt->execute();
+                        
+                        $dbh = null;
+                        
+                        header('Location: ./login.php');
+                        exit();
+                        
+                    } catch(Exception $e) {
+                        print "データベースの接続に失敗しました： " . $e->getMessage() . "<br/>";
+                        exit();
                     }
 
                 } else {
-                    $errors['password'] = "パスワードを４文字以上で入力してください";
+                    $errors['user'] = "すでに登録されている名前です";
                 }
-                
-            } else {
-                $errors['user'] = "名前を２文字以上で入力してください";
 
-                if ($password === "" || mb_strlen($password) < 4) {
-                    $errors['password'] = "パスワードを４文字以上で入力してください";
-                }
+            } else {
+                $errors['password'] = "パスワードを４文字以上で入力してください";
             }
             
         } else {
-            if ($_SESSION['pretoken'] !== $post_token) {
-                $_SESSION['error'] = "ブラウザで複数回読み込みがされています。ブラウザを変えて試してみてください。";
+            $errors['user'] = "名前を２文字以上で入力してください";
+
+            if ($password === "" || mb_strlen($password) < 4) {
+                $errors['password'] = "パスワードを４文字以上で入力してください";
             }
         }
         unset($user);
