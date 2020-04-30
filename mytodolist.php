@@ -196,7 +196,7 @@ $_SESSION['token'] = $csrf_token;
                 <?php
                 // 名前の表示
                 if (isset($username)) {
-                    echo "<div><p class='introduction'>ようこそ、". $username ."さん</p></div>";
+                    echo "<div><p class='introduction'>ようこそ、". h($username) ."さん</p></div>";
                 }
                 ?>
 
