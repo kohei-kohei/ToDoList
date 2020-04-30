@@ -279,12 +279,12 @@ section .inner {
   padding: 0.5rem 0.8rem;
   -webkit-transition: all 0.3s ease 0s;
   transition: all 0.3s ease 0s;
-  width: 80%;
+  width: 75%;
 }
 
 @media screen and (max-width: 1023px) {
   .input_info .input-text {
-    width: 75%;
+    width: 65%;
   }
 }
 

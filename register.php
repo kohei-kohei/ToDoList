@@ -5,7 +5,7 @@ require_once('functions.php');
 session_start();
 $errors = array();
 
-$token = "ashdg784t59/84gbefjc00dkslnfe/fwp23r9";
+$token = "";
 $csrf_token = password_hash($token, PASSWORD_DEFAULT);
 
 // 利用者の登録
@@ -16,46 +16,64 @@ if(isset($_POST['submit']) && $_POST['submit'] === "登録") {
         unset($post_token);
         $user = htmlspecialchars($_POST['user'], ENT_QUOTES);
         $password = htmlspecialchars($_POST['password'], ENT_QUOTES);
+        $repassword = htmlspecialchars($_POST['repassword'], ENT_QUOTES);
 
         // 空チェックと文字数チェック
-        if ($user !== "" && mb_strlen($user) >= 2) {
+        if ($user !== "" && mb_strlen($user) >= 2 && mb_strlen($user) <= 20) {
             if ($password !== "" && mb_strlen($password) >= 4) {
-                
-                $dbh = db_connect();
-                
-                // 名前の被りを探す
-                $sql = 'SELECT COUNT(*) FROM users WHERE user = ?';
-                
-                $stmt = $dbh->prepare($sql);
-                $stmt->bindValue(1, $user, PDO::PARAM_STR);
-                $stmt->execute();
-                
-                $count = (int)$stmt->fetchColumn();
+                if ($repassword !== "" && mb_strlen($repassword) >= 4) {
+                    if ($password === $repassword){
+                        
+                        $dbh = db_connect();
+                        
+                        // 名前の被りを探す
+                        $sql = 'SELECT COUNT(*) FROM users WHERE user = ?';
+                        
+                        try {
+                            
+                            $stmt = $dbh->prepare($sql);
+                            $stmt->bindValue(1, $user, PDO::PARAM_STR);
+                            $stmt->execute();
+                            
+                            $count = (int)$stmt->fetchColumn();
+                            
+                        } catch(Exception $e) {
+                            print "データベースの接続に失敗しました： " . $e->getMessage() . "<br/>";
+                            exit();
+                        }
+                        
+                        if ($count === 0) {
+                            
+                            $sql = 'INSERT INTO users (user, password) VALUES (?, ?)';   // SQLの命令文
+                            
+                            try {
+                                
+                                // PDOStatementインスタンス
+                                $stmt = $dbh->prepare($sql);
+                                $stmt->bindValue(1, $user, PDO::PARAM_STR);
+                                $stmt->bindValue(2, password_hash($password, PASSWORD_DEFAULT), PDO::PARAM_STR);
+                                $stmt->execute();
+                                
+                                $dbh = null;
+                                
+                                header('Location: ./login.php');
+                                exit();
+                                
+                            } catch(Exception $e) {
+                                print "データベースの接続に失敗しました： " . $e->getMessage() . "<br/>";
+                                exit();
+                            }
+                            
+                        } else {
+                            $errors['user'] = "すでに登録されている名前です";
+                        }
 
-                if ($count === 0) {
-
-                    $sql = 'INSERT INTO users (user, password) VALUES (?, ?)';   // SQLの命令文
-                    
-                    try {
-                        
-                        // PDOStatementインスタンス
-                        $stmt = $dbh->prepare($sql);
-                        $stmt->bindValue(1, $user, PDO::PARAM_STR);
-                        $stmt->bindValue(2, password_hash($password, PASSWORD_DEFAULT), PDO::PARAM_STR);
-                        $stmt->execute();
-                        
-                        $dbh = null;
-                        
-                        header('Location: ./login.php');
-                        exit();
-                        
-                    } catch(Exception $e) {
-                        print "データベースの接続に失敗しました： " . $e->getMessage() . "<br/>";
-                        exit();
+                    } else {
+                        $errors['repassword'] = "パスワードの入力が異なっています";
                     }
-
+                        
                 } else {
-                    $errors['user'] = "すでに登録されている名前です";
+                    $errors['repassword'] = "パスワードを４文字以上で入力してください";
                 }
 
             } else {
@@ -63,8 +81,12 @@ if(isset($_POST['submit']) && $_POST['submit'] === "登録") {
             }
             
         } else {
-            $errors['user'] = "名前を２文字以上で入力してください";
-
+            if (mb_strlen($user) < 2) {
+                $errors['user'] = "名前を２文字以上で入力してください";
+            } else if(mb_strlen($user) > 20) {
+                $errors['user'] = "名前を20文字以下で入力してください";
+            }
+            
             if ($password === "" || mb_strlen($password) < 4) {
                 $errors['password'] = "パスワードを４文字以上で入力してください";
             }
@@ -96,10 +118,10 @@ $_SESSION['token'] = $csrf_token;
         <!-- Twitterの設定 -->
         <meta name="twitter:card" content="summary" /> 
         <meta name="twitter:site" content="@Kohei_web_nlp" />
-        <meta property="og:url" content="https://kohei-kohei.github.io/portfolio/" /> 
+        <meta property="og:url" content="https://todolist.ko-hei-blog.com/index.php" /> 
         <meta property="og:title" content="Todoリスト" /> 
         <meta property="og:description" content="Todoリストです" />
-        <meta property="og:image" content="https://kohei-kohei.github.io/portfolio/img/dubai.jpg" />
+        <meta property="og:image" content="https://portfolio.ko-hei-blog.com/img/todolist.png" />
 
         <link href="css/style.css" rel="stylesheet">
     </head>
@@ -141,7 +163,14 @@ $_SESSION['token'] = $csrf_token;
 
                     <div class="password flex">
                         <p>パスワード</p>
-                        <input class="input-text" type="text" name="password" placeholder="4文字以上にしてください">
+                        <input class="input-text" type="password" name="password" placeholder="4文字以上にしてください">
+                    </div>
+
+                    <?php if (isset($errors['repassword'])) { echo "<p class='alert'>※".$errors['repassword']."</p>"; } ?>
+
+                    <div class="password flex">
+                        <p>パスワードの確認</p>
+                        <input class="input-text" type="password" name="repassword" placeholder="もう一度入力してください">
                     </div>
                     
                     <input type="hidden" name="token" value="<?php echo $csrf_token; ?>">

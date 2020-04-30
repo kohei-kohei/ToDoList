@@ -6,7 +6,7 @@ session_start();
 $errors = array();
 
 //$csrf_token = htmlspecialchars(base64_encode(random_bytes(32)), ENT_QUOTES);
-$token = "ashdg784t59/84gbefjc00dkslnfe/fwp23r9";
+$token = "";
 $csrf_token = password_hash($token, PASSWORD_DEFAULT);
 
 // タスクの登録
@@ -19,20 +19,32 @@ if (isset($_POST['submit']) && $_POST['submit'] === "追加") {
         
         // 空チェックと文字数チェック
         if ($task !== "" && mb_strlen($task) >= 2) {
-            
-            $dbh = db_connect();
-            
-            $sql = 'INSERT INTO tasks (task, user) VALUES (?, "demo")';   // SQLの命令文
-            
-            // PDOStatementインスタンス
-            $stmt = $dbh->prepare($sql);
-            $stmt->bindValue(1, $task, PDO::PARAM_STR);
-            $stmt->execute();
-            
-            $dbh = null;
-            
-            header('Location: ./index.php');
-            exit();
+            if (mb_strlen($task) <= 30) {
+                
+                $dbh = db_connect();
+                
+                $sql = 'INSERT INTO tasks (task, user) VALUES (?, "demo")';   // SQLの命令文
+                
+                try {
+                            
+                    // PDOStatementインスタンス
+                    $stmt = $dbh->prepare($sql);
+                    $stmt->bindValue(1, $task, PDO::PARAM_STR);
+                    $stmt->execute();
+                    
+                    $dbh = null;
+                    
+                    header('Location: ./index.php');
+                    exit();
+                    
+                } catch(Exception $e) {
+                    print "データベースの接続に失敗しました： " . $e->getMessage() . "<br/>";
+                    exit();
+                }
+
+            } else {
+                $errors['task'] = "タスクを30文字以下で入力してください";
+            }
             
         } else {
             $errors['task'] = "タスクを２文字以上で入力してください";
@@ -63,14 +75,21 @@ if(isset($_POST['method']) && ($_POST['method'] === 'put')) {
 
         $sql = "DELETE FROM tasks WHERE id = ?";
 
-        $stmt = $dbh->prepare($sql);
-        $stmt->bindValue(1, $id, PDO::PARAM_INT);
-        $stmt->execute();
+        try {
 
-        $dbh = null;
+            $stmt = $dbh->prepare($sql);
+            $stmt->bindValue(1, $id, PDO::PARAM_INT);
+            $stmt->execute();
+            
+            $dbh = null;
+            
+            header('Location: ./index.php');
+            exit();
 
-        header('Location: ./index.php');
-        exit();
+        } catch(Exception $e) {
+            print "データベースの接続に失敗しました： " . $e->getMessage() . "<br/>";
+            exit();
+        }
 
     } else {
         $_SESSION['error'] = "不正なアクセスです";
@@ -93,10 +112,10 @@ $_SESSION['token'] = $csrf_token;
         <!-- Twitterの設定 -->
         <meta name="twitter:card" content="summary" /> 
         <meta name="twitter:site" content="@Kohei_web_nlp" />
-        <meta property="og:url" content="https://kohei-kohei.github.io/portfolio/" /> 
+        <meta property="og:url" content="https://todolist.ko-hei-blog.com/index.php" /> 
         <meta property="og:title" content="Todoリスト" /> 
         <meta property="og:description" content="Todoリストです" />
-        <meta property="og:image" content="https://kohei-kohei.github.io/portfolio/img/dubai.jpg" />
+        <meta property="og:image" content="https://portfolio.ko-hei-blog.com/img/todolist.png" />
 
         <link href="css/style.css" rel="stylesheet">
     </head>

@@ -5,7 +5,7 @@ require_once('functions.php');
 session_start();
 $errors = array();
 
-$token = "ashdg784t59/84gbefjc00dkslnfe/fwp23r9";
+$token = "";
 $csrf_token = password_hash($token, PASSWORD_DEFAULT);
 
 // 利用者のログイン
@@ -87,10 +87,10 @@ $_SESSION['token'] = $csrf_token;
         <!-- Twitterの設定 -->
         <meta name="twitter:card" content="summary" /> 
         <meta name="twitter:site" content="@Kohei_web_nlp" />
-        <meta property="og:url" content="https://kohei-kohei.github.io/portfolio/" /> 
+        <meta property="og:url" content="https://todolist.ko-hei-blog.com/index.php" /> 
         <meta property="og:title" content="Todoリスト" /> 
         <meta property="og:description" content="Todoリストです" />
-        <meta property="og:image" content="https://kohei-kohei.github.io/portfolio/img/dubai.jpg" />
+        <meta property="og:image" content="https://portfolio.ko-hei-blog.com/img/todolist.png" />
 
         <link href="css/style.css" rel="stylesheet">
     </head>
@@ -134,7 +134,7 @@ $_SESSION['token'] = $csrf_token;
 
                     <div class="password flex">
                         <p>パスワード</p>
-                        <input class="input-text" type="text" name="password" placeholder="パスワードを入力してください">
+                        <input class="input-text" type="password" name="password" placeholder="パスワードを入力してください">
                     </div>
 
                     <input type="hidden" name="token" value="<?php echo $csrf_token; ?>">
