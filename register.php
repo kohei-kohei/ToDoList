@@ -14,9 +14,9 @@ if(isset($_POST['submit']) && $_POST['submit'] === "登録") {
     
     if (isset($post_token, $_SESSION['token']) && password_verify($token, $_SESSION['token']) && password_verify($token, $post_token)) {
         unset($post_token);
-        $user = htmlspecialchars($_POST['user'], ENT_QUOTES);
-        $password = htmlspecialchars($_POST['password'], ENT_QUOTES);
-        $repassword = htmlspecialchars($_POST['repassword'], ENT_QUOTES);
+        $user = $_POST['user'];
+        $password = $_POST['password'];
+        $repassword = $_POST['repassword'];
 
         // 空チェックと文字数チェック
         if ($user !== "" && mb_strlen($user) >= 2 && mb_strlen($user) <= 20) {

@@ -3,7 +3,7 @@ function db_connect() {
 
     // エラー処理
     try {
-        $dsn = 'mysql:dbname=todolist; host=localhost; charset=utf8';
+        $dsn = 'mysql:dbname=todolist; host=localhost; charset=utf8mb4';
         $user = 'root';
         $password = 'root';
 
@@ -17,7 +17,7 @@ function db_connect() {
                 PDO::ATTR_EMULATE_PREPARES => false,                    // 静的プレースホルダー
             )
         );
-        $dbh->query('SET NAMES utf8');
+        $dbh->query('SET NAMES utf8mb4');
                     
         return $dbh;
             
@@ -26,4 +26,8 @@ function db_connect() {
         exit();
     }
         
+}
+
+function h($str) {
+    return htmlspecialchars($str, ENT_QUOTES, 'UTF-8');
 }

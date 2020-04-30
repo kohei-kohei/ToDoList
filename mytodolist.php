@@ -15,7 +15,7 @@ if (!isset($_SESSION['username']) || !isset($_SESSION['token'])) {
     exit();
 
 } else {
-    $user = htmlspecialchars($_SESSION['username']);
+    $user = $_SESSION['username'];
     $dbh = db_connect();
 
     $sql = 'SELECT * FROM users WHERE user = ?'; // SQLの命令文
@@ -45,11 +45,11 @@ if (!isset($_SESSION['username']) || !isset($_SESSION['token'])) {
 
 // タスクの登録
 if(isset($_POST['submit']) && $_POST['submit'] === "追加") {
-    $post_token = htmlspecialchars($_POST['token'], ENT_QUOTES);
+    $post_token = $_POST['token'];
     
     if (isset($post_token, $_SESSION['token']) && password_verify($token, $_SESSION['token']) && password_verify($token, $post_token)) {
         unset($post_token);
-        $task = htmlspecialchars($_POST['task'], ENT_QUOTES);
+        $task = $_POST['task'];
 
         // 空チェックと文字数チェック
         if ($task !== "" && mb_strlen($task) >= 2) {
@@ -101,12 +101,11 @@ if(isset($_POST['submit']) && $_POST['submit'] === "追加") {
 
 // 完了ボタンを押したら非表示にする
 if(isset($_POST['method']) && ($_POST['method'] === 'put')) {
-    $post_token = htmlspecialchars($_POST['token'], ENT_QUOTES);
+    $post_token = $_POST['token'];
     
     if (isset($post_token, $_SESSION['token']) && password_verify($token, $_SESSION['token']) && password_verify($token, $post_token)) {
         unset($post_token);
-        $id = htmlspecialchars($_POST['id'], ENT_QUOTES);
-        $id = (int)$id;
+        $id = (int)$_POST['id'];
         
         $dbh = db_connect();
 
@@ -137,7 +136,7 @@ if(isset($_POST['method']) && ($_POST['method'] === 'put')) {
 
 // ログアウトを押したらユーザ情報を初期化する
 if(isset($_POST['logout']) && ($_POST['logout'] === 'out')) {
-    $post_token = htmlspecialchars($_POST['token'], ENT_QUOTES);
+    $post_token = $_POST['token'];
     
     if (isset($post_token, $_SESSION['token']) && password_verify($token, $_SESSION['token']) && password_verify($token, $post_token)) {
         unset($post_token);
@@ -217,7 +216,7 @@ $_SESSION['token'] = $csrf_token;
                 
                 while($tasks = $stmt->fetch(PDO::FETCH_ASSOC)) {
                     print '<li class="flex">';
-                    print '<p>' . $tasks["task"] . '</p>';
+                    print '<p>' . h($tasks["task"]) . '</p>';
 
                     print '
                         <form action="mytodolist.php" method="post">

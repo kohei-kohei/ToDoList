@@ -5,17 +5,17 @@ require_once('functions.php');
 session_start();
 $errors = array();
 
-//$csrf_token = htmlspecialchars(base64_encode(random_bytes(32)), ENT_QUOTES);
+//$csrf_token = base64_encode(random_bytes(32));
 $token = "";
 $csrf_token = password_hash($token, PASSWORD_DEFAULT);
 
 // タスクの登録
 if (isset($_POST['submit']) && $_POST['submit'] === "追加") {
-    $post_token = htmlspecialchars($_POST['token'], ENT_QUOTES);
+    $post_token = $_POST['token'];
     
     if (isset($post_token, $_SESSION['token']) && password_verify($token, $_SESSION['token']) && password_verify($token, $post_token)) {
         unset($post_token);
-        $task = htmlspecialchars($_POST['task'], ENT_QUOTES);
+        $task = $_POST['task'];
         
         // 空チェックと文字数チェック
         if ($task !== "" && mb_strlen($task) >= 2) {
@@ -64,12 +64,11 @@ if (isset($_POST['submit']) && $_POST['submit'] === "追加") {
 
 // 完了ボタンを押したら非表示にする
 if(isset($_POST['method']) && ($_POST['method'] === 'put')) {
-    $post_token = htmlspecialchars($_POST['token'], ENT_QUOTES);
+    $post_token = $_POST['token'];
     
     if (isset($post_token, $_SESSION['token']) && password_verify($token, $_SESSION['token']) && password_verify($token, $post_token)) {
         unset($post_token);
-        $id = htmlspecialchars($_POST['id'], ENT_QUOTES);
-        $id = (int)$id;
+        $id = (int)$_POST['id'];
 
         $dbh = db_connect();
 
@@ -161,7 +160,7 @@ $_SESSION['token'] = $csrf_token;
                 
                 while($tasks = $stmt->fetch(PDO::FETCH_ASSOC)) {
                     print '<li class="flex">';
-                    print '<p>' . $tasks["task"] . '</p>';
+                    print '<p>' . h($tasks["task"]) . '</p>';
 
                     print '
                         <form action="index.php" method="post">
