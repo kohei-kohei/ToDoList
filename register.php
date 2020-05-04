@@ -19,7 +19,7 @@ if(isset($_POST['submit']) && $_POST['submit'] === "登録") {
         $repassword = $_POST['repassword'];
 
         // 空チェックと文字数チェック
-        if ($user !== "" && mb_strlen($user) >= 2 && mb_strlen($user) <= 20) {
+        if ($user !== "" && mb_strlen($user) >= 2 && mb_strlen($user) <= 20 && $user !=='demo') {
             if ($password !== "" && mb_strlen($password) >= 4) {
                 if ($repassword !== "" && mb_strlen($repassword) >= 4) {
                     if ($password === $repassword){
@@ -83,8 +83,10 @@ if(isset($_POST['submit']) && $_POST['submit'] === "登録") {
         } else {
             if (mb_strlen($user) < 2) {
                 $errors['user'] = "名前を２文字以上で入力してください";
-            } else if(mb_strlen($user) > 20) {
+            } else if (mb_strlen($user) > 20) {
                 $errors['user'] = "名前を20文字以下で入力してください";
+            } else if ($user === 'demo') {
+                $errors['user'] = "すでに登録されている名前です";
             }
             
             if ($password === "" || mb_strlen($password) < 4) {

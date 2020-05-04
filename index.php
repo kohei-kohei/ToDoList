@@ -72,22 +72,42 @@ if(isset($_POST['method']) && ($_POST['method'] === 'put')) {
 
         $dbh = db_connect();
 
-        $sql = "DELETE FROM tasks WHERE id = ?";
-
+        $sql = 'SELECT * FROM tasks WHERE id = ?';
+                
         try {
 
             $stmt = $dbh->prepare($sql);
             $stmt->bindValue(1, $id, PDO::PARAM_INT);
             $stmt->execute();
             
-            $dbh = null;
-            
-            header('Location: ./index.php');
-            exit();
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
         } catch(Exception $e) {
             print "データベースの接続に失敗しました： " . $e->getMessage() . "<br/>";
             exit();
+        }
+
+        if ($result['user'] === 'demo') {
+            
+            $sql = "DELETE FROM tasks WHERE id = ?";
+            
+            try {
+                
+                $stmt = $dbh->prepare($sql);
+                $stmt->bindValue(1, $id, PDO::PARAM_INT);
+                $stmt->execute();
+                
+                $dbh = null;
+                
+                header('Location: ./index.php');
+                exit();
+                
+            } catch(Exception $e) {
+                print "データベースの接続に失敗しました： " . $e->getMessage() . "<br/>";
+                exit();
+            }
+        } else {
+            $_SESSION['error'] = "不正な処理です";
         }
 
     } else {
